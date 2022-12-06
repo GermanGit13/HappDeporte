@@ -32,7 +32,7 @@ public class User {
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     @Size(min = 3, max = 9)
-    private String user;
+    private String username;
 
     @Column
     @NotBlank(message = LITERAL_NOT_BLANK)
