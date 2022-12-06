@@ -21,14 +21,14 @@ import static com.svalero.happDeporte.Util.Literal.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "users") //Entidad de BBDD - SpringBoot creará la tabla
+@Entity(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(unique = true)
+    @Column//(unique = true) //Falla en H2
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     @Size(min = 3, max = 9)
@@ -40,13 +40,13 @@ public class User {
     @Size(min = 6, max = 16)
     private String pass;
 
-    @Column(columnDefinition = ROL_DEFAULT)
+    @Column//(columnDefinition = ROL_DEFAULT) //Falla en H2
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private String rol;
 
     //TODO revisar como ponerlo por defecto en false -> el admin lo cambiará a true
-    @Column(columnDefinition = BOOLEAN_DEFAULT)
+    @Column//(columnDefinition = BOOLEAN_DEFAULT) //Falla en H2
     @NotNull(message = LITERAL_NOT_NULL)
     private boolean coach;
 

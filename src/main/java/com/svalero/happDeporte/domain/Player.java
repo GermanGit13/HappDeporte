@@ -38,7 +38,7 @@ public class Player {
     @NotNull(message = LITERAL_NOT_NULL)
     private String surname;
 
-    @Column(unique = true)
+    @Column//(unique = true) //Falla en H2
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private String dni;
@@ -60,7 +60,7 @@ public class Player {
     @NotNull(message = LITERAL_NOT_NULL)
     private char sex;
 
-    @Column(columnDefinition = "TRUE")
+    @Column//(columnDefinition = "TRUE") //Falla en H2
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private boolean active;

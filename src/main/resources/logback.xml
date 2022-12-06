@@ -5,7 +5,7 @@
     <!-- 2b -> crear clase en los controller para escribir en los log (Clase Logger) -->
     <!-- Propiedades que se usará para indicar dónde almacenar los logs y cómo se llama el fichero -->
     <property name="LOG_DIR" value="logs" /> <!-- Carpeta donde va el log -->
-    <property name="LOG_NAME" value="buses" /> <!-- Nombre de la API -->
+    <property name="LOG_NAME" value="happDeporte" /> <!-- Nombre de la API -->
 
     <!-- Configuración del log que aparece por consola: Console appender -->
     <!-- Apender de Consola -> La librería logback envia los mensajes de error a la consola -->

@@ -46,7 +46,7 @@ public class Team {
     @Column
     private String schedule;
 
-    @Column(columnDefinition = "TRUE")
+    @Column//(columnDefinition = "TRUE") //Falla en H2
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private boolean active;
