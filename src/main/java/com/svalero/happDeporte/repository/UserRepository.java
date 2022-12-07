@@ -1,6 +1,7 @@
 package com.svalero.happDeporte.repository;
 
 import com.svalero.happDeporte.domain.User;
+import com.svalero.happDeporte.exception.UserNotFoundException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,5 +23,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> findAll();
     List<User> findAllByCoach(boolean coach);
     List<User> findByRol(String rol);
-    User findByUsername(String username);
+    //Todo revisar la excepción
+    User findUserByUsername(String username); //throws UserNotFoundException;
+    User findUserById(long id) throws UserNotFoundException;
 }

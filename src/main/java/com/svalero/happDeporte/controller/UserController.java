@@ -2,6 +2,7 @@ package com.svalero.happDeporte.controller;
 
 import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.ErrorMessage;
+import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.svalero.happDeporte.Util.Literal.LITERAL_BEGIN_GETBUS;
+import static com.svalero.happDeporte.Util.Literal.LITERAL_END_GETBUS;
 
 /** 4) Las clases que expongan la lógica de la Aplicación al exterior
  * parecido a los jsp antiguos, capa visible
@@ -55,6 +59,27 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getBus(@PathVariable long id) throws UserNotFoundException {
+        logger.debug(LITERAL_BEGIN_GETBUS); //Indicamos que el método ha sido llamado y lo registramos en el log
+        User user = userService.findById(id); //Recogemos el objeto llamado por el método y creamos el objeto
+        logger.debug(LITERAL_END_GETBUS);//Indicamos que el método ha finalizado y lo registramos en el log
+        return ResponseEntity.ok(user);
+    }
+
+    /**
+     * @ExceptionHandler(BusNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso BusNotFoundException.class
+     * ResponseEntity<?>: Con el interrogante porque no sabe que nos devolver
+     * @return
+     */
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleUserNotFoundException(UserNotFoundException unfe) {
+        logger.error(unfe.getMessage(), unfe); //Mandamos la traza de la exception al log, con su mensaje y su traza
+        //unfe.printStackTrace(); //Traza por consola del error
+        unfe.printStackTrace(); //Para la trazabilidad de la exception
+        ErrorMessage errorMessage = new ErrorMessage(404, unfe.getMessage());
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND); // le pasamos el error y el 404 de not found
+    }
 
     /** Capturamos la excepcion para las validaciones y así devolvemos un 400 Bad Request alguien llama a la API de forma incorrecta
      *@ExceptionHandler(MethodArgumentNotValidException.class) Para capturar la excepcion de las validaciones que hacemos al dar de alta un bus
@@ -82,10 +107,9 @@ public class UserController {
     }
 
     /**
-     * Lo usamos para contralar las excepciones ne general para pillar los errors 500
+     * Lo usamos para contralar las excepciones en general para pillar los errors 500
      * @param exception
      * @return
-     * La dejamos comentada porque el bar request que ofrece Spring Boot de momento es mejor hasta tener la parte de los logs
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleException(Exception exception) {
