@@ -34,15 +34,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-    //TODO revisar la excepción
-    @Override
-    public User findByUsername(String username) { //throws UserNotFoundException{
-        return userRepository.findUserByUsername(username);
-    }
-
     @Override
     public User findById(long id) throws UserNotFoundException {
         return userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+    }
+
+    //TODO revisar la excepción
+    @Override
+    public User findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username);
     }
 }

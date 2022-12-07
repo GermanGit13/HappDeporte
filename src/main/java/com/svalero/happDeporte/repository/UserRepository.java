@@ -24,6 +24,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> findAllByCoach(boolean coach);
     List<User> findByRol(String rol);
     //Todo revisar la excepción
-    User findUserByUsername(String username); //throws UserNotFoundException;
+    User findUserByUsername(String username);
     User findUserById(long id) throws UserNotFoundException;
 }

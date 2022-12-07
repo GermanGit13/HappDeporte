@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.svalero.happDeporte.Util.Literal.LITERAL_BEGIN_GETBUS;
-import static com.svalero.happDeporte.Util.Literal.LITERAL_END_GETBUS;
+import static com.svalero.happDeporte.Util.Literal.LITERAL_BEGIN_GETUSER;
+import static com.svalero.happDeporte.Util.Literal.LITERAL_END_GETUSER;
 
 /** 4) Las clases que expongan la lógica de la Aplicación al exterior
  * parecido a los jsp antiguos, capa visible
@@ -59,16 +59,36 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    /**
+     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
+     * @GetMapping("/users/id"): URL donde se devolverán los datos por el código Id
+     * @PathVariable: Para indicar que el parámetro que le pasamos en el String es que debe ir en la URL
+     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
+     */
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getBus(@PathVariable long id) throws UserNotFoundException {
-        logger.debug(LITERAL_BEGIN_GETBUS); //Indicamos que el método ha sido llamado y lo registramos en el log
+    public ResponseEntity<User> getUser(@PathVariable long id) throws UserNotFoundException {
+        logger.debug(LITERAL_BEGIN_GETUSER); //Indicamos que el método ha sido llamado y lo registramos en el log
         User user = userService.findById(id); //Recogemos el objeto llamado por el método y creamos el objeto
-        logger.debug(LITERAL_END_GETBUS);//Indicamos que el método ha finalizado y lo registramos en el log
+        logger.debug(LITERAL_END_GETUSER);//Indicamos que el método ha finalizado y lo registramos en el log
         return ResponseEntity.ok(user);
     }
 
     /**
-     * @ExceptionHandler(BusNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso BusNotFoundException.class
+     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
+     * @GetMapping("/users/id"): URL donde se devolverán los datos por el código Id
+     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
+     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
+     */
+    @GetMapping("/users/{username}")
+    public ResponseEntity<User> getUsername(@RequestParam ("username") String username) {
+        logger.debug(LITERAL_BEGIN_GETUSER); //Indicamos que el método ha sido llamado y lo registramos en el log
+        User user = userService.findUserByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
+        logger.debug(LITERAL_END_GETUSER);//Indicamos que el método ha finalizado y lo registramos en el log
+        return ResponseEntity.ok(user);
+    }
+
+    /**
+     * @ExceptionHandler(BusNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso UserNotFoundException.class
      * ResponseEntity<?>: Con el interrogante porque no sabe que nos devolver
      * @return
      */
