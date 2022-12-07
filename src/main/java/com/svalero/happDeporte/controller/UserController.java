@@ -73,6 +73,14 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/users/username/{username}")
+    public ResponseEntity<User> getUser(@PathVariable String username) {
+        logger.debug("Begin User Username Variable"); //Indicamos que el método ha sido llamado y lo registramos en el log
+        User user = userService.findByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
+        logger.debug("Fin User Username Variable");//Indicamos que el método ha finalizado y lo registramos en el log
+        return ResponseEntity.ok(user);
+    }
+
     /**
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/users/id"): URL donde se devolverán los datos por el código Id
