@@ -14,6 +14,6 @@ public interface UserService {
     List<User> findAll();
 
     //TODO revisar la excepcion
-    User findUserByUsername(String username);
+    User findByUsername(String username);
     User findById(long id) throws UserNotFoundException;
 }

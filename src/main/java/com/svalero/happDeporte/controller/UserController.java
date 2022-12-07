@@ -67,9 +67,9 @@ public class UserController {
      */
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable long id) throws UserNotFoundException {
-        logger.debug(LITERAL_BEGIN_GETUSER); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug("Begin User Id"); //Indicamos que el método ha sido llamado y lo registramos en el log
         User user = userService.findById(id); //Recogemos el objeto llamado por el método y creamos el objeto
-        logger.debug(LITERAL_END_GETUSER);//Indicamos que el método ha finalizado y lo registramos en el log
+        logger.debug("Fin User id");//Indicamos que el método ha finalizado y lo registramos en el log
         return ResponseEntity.ok(user);
     }
 
@@ -79,11 +79,11 @@ public class UserController {
      * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
      * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
      */
-    @GetMapping("/users/{username}")
-    public ResponseEntity<User> getUsername(@RequestParam ("username") String username) {
-        logger.debug(LITERAL_BEGIN_GETUSER); //Indicamos que el método ha sido llamado y lo registramos en el log
-        User user = userService.findUserByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
-        logger.debug(LITERAL_END_GETUSER);//Indicamos que el método ha finalizado y lo registramos en el log
+    @GetMapping("/user")
+    public ResponseEntity<User> getUsername(@RequestParam(name = "username", value = "") String username) {
+        logger.debug("Begin Username"); //Indicamos que el método ha sido llamado y lo registramos en el log
+        User user = userService.findByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
+        logger.debug("Fin Username");//Indicamos que el método ha finalizado y lo registramos en el log
         return ResponseEntity.ok(user);
     }
 
@@ -108,7 +108,7 @@ public class UserController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> handleBadRequestException(MethodArgumentNotValidException manve) {
         logger.error(manve.getMessage(), manve); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //manve.printStackTrace(); //Para la trazabilidad de la exception
+        manve.printStackTrace(); //Para la trazabilidad de la exception
         /**
          * Código que extrae que campos no han pasado la validación
          */
@@ -123,7 +123,7 @@ public class UserController {
          */
 
         ErrorMessage errorMessage = new ErrorMessage(400, "Bad Request", errors); //Podemos pasarle código y mensaje o añadir los códigos de error del Map sacamos los campos que han fallado
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST); // le pasamos el error y el 404 de not found
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST); // le pasamos el error y el 400 de not found
     }
 
     /**
