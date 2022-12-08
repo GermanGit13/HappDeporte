@@ -23,7 +23,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> findAll();
     List<User> findAllByCoach(boolean coach);
     List<User> findByRol(String rol);
-    //Todo revisar la excepción
     User findByUsername(String username);
 
 

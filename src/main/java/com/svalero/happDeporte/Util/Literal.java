@@ -6,8 +6,8 @@ public class Literal {
     public static final String LITERAL_NOT_NULL= "El campo es obligatorio";
     public static final String ROL_DEFAULT= "USER";
     public static final String BOOLEAN_DEFAULT= "FALSE";
-    public static final String LITERAL_BEGIN_ADDUSER = "Begin addUser";
-    public static final String LITERAL_END_ADDUSER = "End addUser";
+    public static final String LITERAL_BEGIN_ADD = "Begin add";
+    public static final String LITERAL_END_ADD = "End add";
     public static final String LITERAL_BEGIN_DELETEUSER = "Begin deleteUser";
     public static final String LITERAL_END_DELETEUSER = "End deleteUser";
     public static final String LITERAL_BEGIN_MODIFYUSER = "Begin modifyUser";

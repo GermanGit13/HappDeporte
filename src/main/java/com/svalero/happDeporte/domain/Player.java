@@ -45,8 +45,8 @@ public class Player {
 
 
     @Column
-    @NotBlank(message = LITERAL_NOT_BLANK)
-    @NotNull(message = LITERAL_NOT_NULL)
+//    @NotBlank(message = LITERAL_NOT_BLANK)
+//    @NotNull(message = LITERAL_NOT_NULL)
     private Date birthDate;
 
     @Column

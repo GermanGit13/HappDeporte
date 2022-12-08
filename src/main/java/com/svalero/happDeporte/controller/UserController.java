@@ -29,7 +29,7 @@ import static com.svalero.happDeporte.Util.Literal.*;
 public class UserController {
 
     /**
-     * Llamamos al BusService el cual llama al BusRepository y a su vez este llama a la BBDD
+     * Llamamos al UserService el cual llama al UserRepository y a su vez este llama a la BBDD
      */
     @Autowired
     private UserService userService;
@@ -44,9 +44,9 @@ public class UserController {
      */
     @PostMapping("/users")
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
-        logger.debug(LITERAL_BEGIN_ADDUSER); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_BEGIN_ADD); //Indicamos que el método ha sido llamado y lo registramos en el log
         User newUser = userService.addUser(user);
-        logger.debug(LITERAL_END_ADDUSER); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_END_ADD); //Indicamos que el método ha sido llamado y lo registramos en el log
         //return ResponseEntity.status(200).body(newUser); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newUser, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }

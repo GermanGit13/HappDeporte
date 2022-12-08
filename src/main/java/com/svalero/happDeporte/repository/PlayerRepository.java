@@ -4,7 +4,9 @@ import com.svalero.happDeporte.domain.Player;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-/**Son los métodos que conectan con la BBDD
+import java.util.List;
+
+/** 1) Son los métodos que conectan con la BBDD
  * @Repository para decirle que es un DAO y que extiende de CrudRepository
  * interface: hacemos interface con la anotación específica
  * así solo con escribir el nombre de los métodos, sprinboot sabe que métodos son
@@ -12,5 +14,13 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PlayerRepository extends CrudRepository<Player, Long> {
+
+    /**
+     * Query Methods: Métodos de las sentencias SQL con el nombre ya resuelve la consulta
+     */
+
+    List<Player> findAll();
+//    List<Player> findByDni();
+//    List<Player> findByUserInPlayer();
 
 }
