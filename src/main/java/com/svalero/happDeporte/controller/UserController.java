@@ -13,12 +13,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.RollbackException;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.svalero.happDeporte.Util.Literal.LITERAL_BEGIN_GETUSER;
-import static com.svalero.happDeporte.Util.Literal.LITERAL_END_GETUSER;
+import static com.svalero.happDeporte.Util.Literal.*;
 
 /** 4) Las clases que expongan la lógica de la Aplicación al exterior
  * parecido a los jsp antiguos, capa visible
@@ -42,20 +43,52 @@ public class UserController {
      * @Valid Para decir que valide los campos a la hora de añadir un nuevo objeto,  los campos los definidos en el domain de que forma no pueden ser introducidos o dejados en blanco por ejemplo en la BBDD
      */
     @PostMapping("/users")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+        logger.debug(LITERAL_BEGIN_ADDUSER); //Indicamos que el método ha sido llamado y lo registramos en el log
         User newUser = userService.addUser(user);
+        logger.debug(LITERAL_END_ADDUSER); //Indicamos que el método ha sido llamado y lo registramos en el log
         //return ResponseEntity.status(200).body(newUser); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newUser, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
 
     /**
+     * ResponseEntity<Void>: Vacio, solo tiene código de estado
+     * @DeleteMapping("/users/{id}"): Método para dar borrar por id
+     * @PathVariable: Para indicar que el parámetro que le pasamos por la url
+     */
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) throws UserNotFoundException {
+        logger.debug(LITERAL_BEGIN_DELETEUSER);
+        userService.deleteUser(id);
+        logger.debug(LITERAL_END_DELETEUSER);
+        return ResponseEntity.noContent().build(); //Me devuelve nada cuando lo borro o la excepción cuando falla
+    }
+
+    /**
+     * @PutMapping("/users/{id}"): Método para modificar
+     * @PathVariable: Para indicar que el parámetro que le pasamos
+     * @RequestBody User user para pasarle los datos del objeto a modificar
+     */
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> modifyUser(@PathVariable long id, @RequestBody User user) throws UserNotFoundException, RollbackException {
+        logger.debug(LITERAL_BEGIN_MODIFYUSER);
+        User modifiedUser = userService.modifyUser(id, user);
+        logger.debug(LITERAL_END_MODIFYUSER);
+        return ResponseEntity.status(HttpStatus.OK).body(modifiedUser);
+
+    }
+
+    /**
+     *
      * ResponseEntity: Para devolver una respuesta con los datos y el código de estado de forma explícita
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/users"): URL donde se devolverán los datos
      */
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUser() {
+    public ResponseEntity<List<User>> getUsers() {
+        logger.debug(LITERAL_BEGIN_GETUSERS);
         List<User> users = userService.findAll();
+        logger.debug(LITERAL_END_GETUSERS);
         return ResponseEntity.ok(users);
     }
 
@@ -66,20 +99,20 @@ public class UserController {
      * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
      */
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable long id) throws UserNotFoundException {
-        logger.debug("Begin User Id"); //Indicamos que el método ha sido llamado y lo registramos en el log
+    public ResponseEntity<User> getUserId(@PathVariable long id) throws UserNotFoundException {
+        logger.debug(LITERAL_BEGIN_GETUSERID);
         User user = userService.findById(id); //Recogemos el objeto llamado por el método y creamos el objeto
-        logger.debug("Fin User id");//Indicamos que el método ha finalizado y lo registramos en el log
+        logger.debug(LITERAL_END_GETUSERID);
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/users/username/{username}")
-    public ResponseEntity<User> getUser(@PathVariable String username) {
-        logger.debug("Begin User Username Variable"); //Indicamos que el método ha sido llamado y lo registramos en el log
-        User user = userService.findByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
-        logger.debug("Fin User Username Variable");//Indicamos que el método ha finalizado y lo registramos en el log
-        return ResponseEntity.ok(user);
-    }
+//    @GetMapping("/users/username/{username}")
+//    public ResponseEntity<User> getUser(@PathVariable String username) {
+//        logger.debug("Begin User Username Variable"); //Indicamos que el método ha sido llamado y lo registramos en el log
+//        User user = userService.findByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
+//        logger.debug("Fin User Username Variable");//Indicamos que el método ha finalizado y lo registramos en el log
+//        return ResponseEntity.ok(user);
+//    }
 
     /**
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
@@ -87,13 +120,13 @@ public class UserController {
      * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
      * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
      */
-    @GetMapping("/user")
-    public ResponseEntity<User> getUsername(@RequestParam(name = "username", value = "") String username) {
-        logger.debug("Begin Username"); //Indicamos que el método ha sido llamado y lo registramos en el log
-        User user = userService.findByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
-        logger.debug("Fin Username");//Indicamos que el método ha finalizado y lo registramos en el log
-        return ResponseEntity.ok(user);
-    }
+//    @GetMapping("/user")
+//    public ResponseEntity<User> getUsername(@RequestParam(name = "username", value = "") String username) {
+//        logger.debug("Begin Username"); //Indicamos que el método ha sido llamado y lo registramos en el log
+//        User user = userService.findByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
+//        logger.debug("Fin Username");//Indicamos que el método ha finalizado y lo registramos en el log
+//        return ResponseEntity.ok(user);
+//    }
 
     /**
      * @ExceptionHandler(BusNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso UserNotFoundException.class

@@ -3,6 +3,7 @@ package com.svalero.happDeporte.service;
 import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.UserNotFoundException;
 
+import javax.persistence.RollbackException;
 import java.util.List;
 
 /** 2) Capa donde va a estar la lógica, tendremos una interface por cada clase Java del domain
@@ -11,9 +12,9 @@ import java.util.List;
 public interface UserService {
 
     User addUser(User user);
+    void deleteUser(long id) throws UserNotFoundException;
+    User modifyUser(long id, User newUser) throws UserNotFoundException, RollbackException;
     List<User> findAll();
-
-    //TODO revisar la excepcion
     User findByUsername(String username);
     User findById(long id) throws UserNotFoundException;
 }

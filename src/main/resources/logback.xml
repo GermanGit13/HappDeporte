@@ -43,7 +43,7 @@
     <!-- Define el nivel de log para cada appender -->
     <!-- info -> nivel más bajo de detalle de la API despues del nivel debug que incluye xtodo -->
     <!-- debug -> nivel más bajo de detalle hasta mensajes de SpringBoot -->
-    <root level="info"> <!-- Para cambiar el nivel de detalle -->
+    <root level="debug"> <!-- Para cambiar el nivel de detalle -->
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </root>

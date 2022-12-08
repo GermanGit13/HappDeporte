@@ -93,4 +93,8 @@ public class User {
     @OneToMany(mappedBy = "userInClothes")
     @JsonBackReference(value = "user_clothes")
     private List<Clothes> clothes;
+
+//    public boolean isCoach() {
+//        return coach;
+//    }
 }

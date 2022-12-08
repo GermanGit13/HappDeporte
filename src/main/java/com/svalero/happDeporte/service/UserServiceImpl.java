@@ -4,9 +4,11 @@ import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.RollbackException;
 import java.util.List;
 
 /** 3) Para implementar la interface de cada service
@@ -27,6 +29,37 @@ public class UserServiceImpl implements UserService {
     @Override
     public User addUser(User user) {
         return userRepository.save(user); //conectamos con la BBDD mediante el repositorio
+    }
+
+    @Override
+    public void deleteUser(long id) throws UserNotFoundException {
+        User user = userRepository.findById(id) //recogemos el user en concreto si existe, sino saltara la excepción
+                .orElseThrow(UserNotFoundException::new);
+        userRepository.delete(user); //Si llega aquí es que existe y lo borramos
+    }
+
+    @Override
+    public User modifyUser(long id, User newUser) throws UserNotFoundException, RollbackException {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        //TODO REVISAR COMO ACTUALIZAR DATOS CON MODELMAPPER
+        newUser.setId(id);
+//        if (newUser.setPass(equals(existingUser.setPass()))) {
+//            newUser.setPass(newUser.getPass());
+//        } else {
+//            newUser.setPass(newUser.getPass());
+//        }
+        modelMapper.map(newUser, existingUser);
+//        existingUser.setUsername(newUser.getUsername();
+//        existingUser.setRol(newUser.getRol());
+//        existingUser.setCoach(newUser.isCoach());
+//        existingUser.setName(newUser.getName());
+//        existingUser.setSurname(newUser.getSurname());
+//        existingUser.setAddress(newUser.getAddress());
+//        existingUser.setMail(newUser.getMail());
+//        existingUser.setPhone(newUser.getPhone());
+
+        return userRepository.save(existingUser);
     }
 
     @Override
