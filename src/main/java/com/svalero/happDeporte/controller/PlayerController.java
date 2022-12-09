@@ -32,7 +32,7 @@ import static com.svalero.happDeporte.Util.Literal.*;
 public class PlayerController {
 
     /**
-     * Llamamos al UserService el cual llama al UserRepository y a su vez este llama a la BBDD
+     * Llamamos al PlayerService el cual llama al PlayerRepository y a su vez este llama a la BBDD
      */
     @Autowired
     private PlayerService playerService;
@@ -109,12 +109,12 @@ public class PlayerController {
 
 
     /**
-     * @ExceptionHandler(BusNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso UserNotFoundException.class
+     * @ExceptionHandler(PlayerNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso PlayerNotFoundException.class
      * ResponseEntity<?>: Con el interrogante porque no sabe que nos devolver
      * @return
      */
     @ExceptionHandler(PlayerNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handleUserNotFoundException(PlayerNotFoundException pnfe) {
+    public ResponseEntity<ErrorMessage> handlePlayerNotFoundException(PlayerNotFoundException pnfe) {
         logger.error(pnfe.getMessage(), pnfe); //Mandamos la traza de la exception al log, con su mensaje y su traza
         //unfe.printStackTrace(); //Traza por consola del error
         pnfe.printStackTrace(); //Para la trazabilidad de la exception

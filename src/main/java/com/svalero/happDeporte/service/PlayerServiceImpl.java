@@ -40,7 +40,7 @@ public class PlayerServiceImpl implements PlayerService {
     public Player modifyPlayer(long id, Player newPlayer) throws PlayerNotFoundException {
         Player existingPlayer = playerRepository.findById(id)
                 .orElseThrow(PlayerNotFoundException::new);
-        newPlayer.setId(id);
+        newPlayer.setId(id); // Para añadirle el id, sino no viene en el cuerpo
 
         modelMapper.map(newPlayer, existingPlayer);
         return playerRepository.save(existingPlayer);

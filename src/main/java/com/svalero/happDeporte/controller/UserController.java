@@ -144,7 +144,7 @@ public class UserController {
 
     /** Capturamos la excepcion para las validaciones y así devolvemos un 400 Bad Request alguien llama a la API de forma incorrecta
      *@ExceptionHandler(MethodArgumentNotValidException.class) Para capturar la excepcion de las validaciones que hacemos al dar de alta un bus
-     * le pasamos un mesnaje personalizado de ErrorMessage
+     * le pasamos un mensaje personalizado de ErrorMessage
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> handleBadRequestException(MethodArgumentNotValidException manve) {

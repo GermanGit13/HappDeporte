@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 import static com.svalero.happDeporte.Util.Literal.LITERAL_NOT_BLANK;
 import static com.svalero.happDeporte.Util.Literal.LITERAL_NOT_NULL;
@@ -25,12 +24,10 @@ public class Clothes {
     private long id;
 
     @Column
-    @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private boolean equipment;
 
     @Column
-    @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private boolean sweatshirt;
 
@@ -46,8 +43,9 @@ public class Clothes {
     private String serygrafhy;
 
     @Column
-    @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
+    @Min(1)
+    @Max(99)
     private int dorsal;
 
     @Column
