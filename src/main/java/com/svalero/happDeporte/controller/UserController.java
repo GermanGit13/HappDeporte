@@ -46,9 +46,9 @@ public class UserController {
     @PostMapping("/users")
     @Validated
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
-        logger.debug(LITERAL_BEGIN_ADD + "User"); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_BEGIN_ADD + USER); //Indicamos que el método ha sido llamado y lo registramos en el log
         User newUser = userService.addUser(user);
-        logger.debug(LITERAL_END_ADD + "User"); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_END_ADD + USER); //Indicamos que el método ha sido llamado y lo registramos en el log
         //return ResponseEntity.status(200).body(newUser); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newUser, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
@@ -60,9 +60,9 @@ public class UserController {
      */
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) throws UserNotFoundException {
-        logger.debug(LITERAL_BEGIN_DELETE + "User");
+        logger.debug(LITERAL_BEGIN_DELETE + USER);
         userService.deleteUser(id);
-        logger.debug(LITERAL_END_DELETE + "User");
+        logger.debug(LITERAL_END_DELETE + USER);
         return ResponseEntity.noContent().build(); //Me devuelve nada cuando lo borro o la excepción cuando falla
     }
 
@@ -73,9 +73,9 @@ public class UserController {
      */
     @PutMapping("/users/{id}")
     public ResponseEntity<User> modifyUser(@PathVariable long id, @RequestBody User user) throws UserNotFoundException, RollbackException {
-        logger.debug(LITERAL_BEGIN_MODIFY + "User");
+        logger.debug(LITERAL_BEGIN_MODIFY + USER);
         User modifiedUser = userService.modifyUser(id, user);
-        logger.debug(LITERAL_END_MODIFY + "User");
+        logger.debug(LITERAL_END_MODIFY + USER);
         return ResponseEntity.status(HttpStatus.OK).body(modifiedUser);
 
     }
@@ -87,9 +87,9 @@ public class UserController {
      */
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
-        logger.debug(LITERAL_BEGIN_GET + "Users");
+        logger.debug(LITERAL_BEGIN_GET + USER);
         List<User> users = userService.findAll();
-        logger.debug(LITERAL_END_GET + "Users");
+        logger.debug(LITERAL_END_GET + USER);
         return ResponseEntity.ok(users);
     }
 
@@ -101,9 +101,9 @@ public class UserController {
      */
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserId(@PathVariable long id) throws UserNotFoundException {
-        logger.debug(LITERAL_BEGIN_GET + "UserId");
+        logger.debug(LITERAL_BEGIN_GET + USER + "Id");
         User user = userService.findById(id); //Recogemos el objeto llamado por el método y creamos el objeto
-        logger.debug(LITERAL_END_GET + "UserId");
+        logger.debug(LITERAL_END_GET + USER + "Id");
         return ResponseEntity.ok(user);
     }
 

@@ -47,9 +47,9 @@ public class PlayerController {
     @PostMapping("/players")
     @Validated
     public ResponseEntity<Player> addPlayer(@Valid @RequestBody Player player) {
-        logger.debug(LITERAL_BEGIN_ADD + "Player"); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_BEGIN_ADD + PLAYER); //Indicamos que el método ha sido llamado y lo registramos en el log
         Player newPlayer = playerService.addPlayer(player);
-        logger.debug(LITERAL_END_ADD + "Player"); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_END_ADD + PLAYER); //Indicamos que el método ha sido llamado y lo registramos en el log
         //return ResponseEntity.status(200).body(newPlayer); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newPlayer, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
@@ -61,9 +61,9 @@ public class PlayerController {
      */
     @DeleteMapping("/players/{id}")
     public ResponseEntity<Void> deletePlayer(@PathVariable long id) throws PlayerNotFoundException {
-        logger.debug(LITERAL_BEGIN_DELETE + "Player");
+        logger.debug(LITERAL_BEGIN_DELETE + PLAYER);
         playerService.deletePlayer(id);
-        logger.debug(LITERAL_END_DELETE + "Player");
+        logger.debug(LITERAL_END_DELETE + PLAYER);
         return ResponseEntity.noContent().build();
     }
 
@@ -74,9 +74,9 @@ public class PlayerController {
      */
     @PutMapping("/players/{id}")
     public ResponseEntity<Player> modifyPlayer(@PathVariable long id, @RequestBody Player player) throws PlayerNotFoundException {
-        logger.debug(LITERAL_BEGIN_MODIFY + "Player");
+        logger.debug(LITERAL_BEGIN_MODIFY + PLAYER);
         Player modifiedPlayer = playerService.modifyPlayer(id, player);
-        logger.debug(LITERAL_END_MODIFY + "Player");
+        logger.debug(LITERAL_END_MODIFY + PLAYER);
         return ResponseEntity.status(HttpStatus.OK).body(modifiedPlayer);
     }
 
@@ -87,9 +87,9 @@ public class PlayerController {
      */
     @GetMapping("/players")
     public ResponseEntity<List<Player>> getPlayers() {
-        logger.debug(LITERAL_BEGIN_GET + "Players");
+        logger.debug(LITERAL_BEGIN_GET + PLAYER);
         List<Player> players = playerService.findAll();
-        logger.debug(LITERAL_END_GET + "Players");
+        logger.debug(LITERAL_END_GET + PLAYER);
         return ResponseEntity.ok(players);
     }
 
@@ -101,9 +101,9 @@ public class PlayerController {
      */
     @GetMapping("/players/{id}")
     public ResponseEntity<Player> getPlayerId(@PathVariable long id) throws PlayerNotFoundException {
-        logger.debug(LITERAL_END_GET + "PlayerId");
+        logger.debug(LITERAL_END_GET + PLAYER + "Id");
         Player player = playerService.findById(id);
-        logger.debug(LITERAL_END_GET + "PlayerId");
+        logger.debug(LITERAL_END_GET + PLAYER + "Id");
         return ResponseEntity.ok(player);
     }
 

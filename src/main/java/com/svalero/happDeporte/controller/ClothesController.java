@@ -13,17 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static com.svalero.happDeporte.Util.Literal.LITERAL_BEGIN_ADD;
-import static com.svalero.happDeporte.Util.Literal.LITERAL_END_ADD;
+import static com.svalero.happDeporte.Util.Literal.*;
 
 /** 4) Las clases que expongan la lógica de la Aplicación al exterior
  * parecido a los jsp antiguos, capa visible
@@ -48,10 +45,63 @@ public class ClothesController {
     @PostMapping("/clothes")
     @Validated
     public ResponseEntity<Clothes> addClothes(@Valid @RequestBody Clothes clothes) {
-        logger.debug(LITERAL_BEGIN_ADD + "Clothes");
+        logger.debug(LITERAL_BEGIN_ADD + CLOTHES);
         Clothes newClothes = clothesService.addClothes(clothes);
-        logger.debug(LITERAL_END_ADD + "Clothes");
+        logger.debug(LITERAL_END_ADD + CLOTHES);
         return new ResponseEntity<>(newClothes, HttpStatus.CREATED);
+    }
+
+    /**
+     * ResponseEntity<Void>: Vacio, solo tiene código de estado
+     * @DeleteMapping("/clothes/{id}"): Método para dar borrar por id
+     * @PathVariable: Para indicar que el parámetro que le pasamos por la url
+     */
+    @DeleteMapping("/clothes/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable long id) throws ClothesNotFoundException {
+        logger.debug(LITERAL_BEGIN_DELETE + CLOTHES);
+        clothesService.deleteClothes(id);
+        logger.debug(LITERAL_END_DELETE + CLOTHES);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * @PutMapping("/clothes/{id}"): Método para modificar
+     * @PathVariable: Para indicar que el parámetro que le pasamos
+     * @RequestBody Player player para pasarle los datos del objeto a modificar
+     */
+    @PutMapping("/clothes/{id}")
+    public ResponseEntity<Clothes> modifyClothes(@PathVariable long id, @RequestBody Clothes clothes) throws  ClothesNotFoundException {
+        logger.debug(LITERAL_BEGIN_DELETE + CLOTHES);
+        Clothes modifiedClothes = clothesService.modifyClothes(id, clothes);
+        logger.debug(LITERAL_END_MODIFY + CLOTHES);
+        return ResponseEntity.status(HttpStatus.OK).body(modifiedClothes);
+    }
+
+    /**
+     * ResponseEntity: Para devolver una respuesta con los datos y el código de estado de forma explícita
+     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
+     * @GetMapping("/clothes"): URL donde se devolverán los datos
+     */
+    @GetMapping("/clothes")
+    public ResponseEntity<List<Clothes>> getClothes() {
+        logger.debug(LITERAL_BEGIN_GET + CLOTHES);
+        List<Clothes> clothesList = clothesService.findAll();
+        logger.debug(LITERAL_END_GET + CLOTHES);
+        return ResponseEntity.ok(clothesList);
+    }
+
+    /**
+     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
+     * @GetMapping("/clothes/id"): URL donde se devolverán los datos por el código Id
+     * @PathVariable: Para indicar que el parámetro que le pasamos en el String es que debe ir en la URL
+     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
+     */
+    @GetMapping("/clothes/{id}")
+    public ResponseEntity<Clothes> getClothesId(@PathVariable long id) throws ClothesNotFoundException {
+        logger.debug(LITERAL_BEGIN_GET + CLOTHES + "Id");
+        Clothes clothes = clothesService.findById(id);
+        logger.debug(LITERAL_END_GET + CLOTHES + "Id");
+        return ResponseEntity.ok(clothes);
     }
 
     /**

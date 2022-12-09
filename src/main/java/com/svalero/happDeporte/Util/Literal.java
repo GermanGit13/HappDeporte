@@ -2,6 +2,11 @@ package com.svalero.happDeporte.Util;
 
 public class Literal {
 
+    public static final String USER = "Users";
+    public static final String PLAYER = "Players";
+    public static final String CLOTHES = "Clothes";
+    public static final String TEAM = "Teams";
+    public static final String MATCH = "Matches";
     public static final String LITERAL_NOT_BLANK= "El campo no puede estar en blanco";
     public static final String LITERAL_NOT_NULL= "El campo es obligatorio";
     public static final String ROL_DEFAULT= "USER";
