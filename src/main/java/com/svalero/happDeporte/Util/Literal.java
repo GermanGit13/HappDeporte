@@ -8,12 +8,10 @@ public class Literal {
     public static final String BOOLEAN_DEFAULT= "FALSE";
     public static final String LITERAL_BEGIN_ADD = "Begin add";
     public static final String LITERAL_END_ADD = "End add";
-    public static final String LITERAL_BEGIN_DELETEUSER = "Begin deleteUser";
-    public static final String LITERAL_END_DELETEUSER = "End deleteUser";
-    public static final String LITERAL_BEGIN_MODIFYUSER = "Begin modifyUser";
-    public static final String LITERAL_END_MODIFYUSER = "End modifyUser";
-    public static final String LITERAL_BEGIN_GETUSERS = "Begin getUsers";
-    public static final String LITERAL_END_GETUSERS = "End getUsers";
-    public static final String LITERAL_BEGIN_GETUSERID = "Begin getUserId";
-    public static final String LITERAL_END_GETUSERID = "End getUserId";
+    public static final String LITERAL_BEGIN_DELETE = "Begin delete";
+    public static final String LITERAL_END_DELETE = "End delete";
+    public static final String LITERAL_BEGIN_MODIFY = "Begin modify";
+    public static final String LITERAL_END_MODIFY = "End modify";
+    public static final String LITERAL_BEGIN_GET = "Begin get";
+    public static final String LITERAL_END_GET = "End get";
 }

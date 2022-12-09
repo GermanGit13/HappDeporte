@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 
 import java.util.Date;
 import java.util.List;
@@ -45,6 +47,7 @@ public class Player {
 
 
     @Column
+    @Past
 //    @NotBlank(message = LITERAL_NOT_BLANK)
 //    @NotNull(message = LITERAL_NOT_NULL)
     private Date birthDate;
@@ -56,12 +59,11 @@ public class Player {
     private int dorsal;
 
     @Column
-    @NotBlank(message = LITERAL_NOT_BLANK)
+//    @Pattern(regexp = "M")
     @NotNull(message = LITERAL_NOT_NULL)
     private char sex;
 
-    @Column//(columnDefinition = "TRUE") //Falla en H2
-    @NotBlank(message = LITERAL_NOT_BLANK)
+    @Column//(columnDefinition = "true") //Falla en H2
     @NotNull(message = LITERAL_NOT_NULL)
     private boolean active;
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,10 +44,11 @@ public class UserController {
      * @Valid Para decir que valide los campos a la hora de añadir un nuevo objeto,  los campos los definidos en el domain de que forma no pueden ser introducidos o dejados en blanco por ejemplo en la BBDD
      */
     @PostMapping("/users")
+    @Validated
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
-        logger.debug(LITERAL_BEGIN_ADD); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_BEGIN_ADD + "User"); //Indicamos que el método ha sido llamado y lo registramos en el log
         User newUser = userService.addUser(user);
-        logger.debug(LITERAL_END_ADD); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_END_ADD + "User"); //Indicamos que el método ha sido llamado y lo registramos en el log
         //return ResponseEntity.status(200).body(newUser); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newUser, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
@@ -58,9 +60,9 @@ public class UserController {
      */
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) throws UserNotFoundException {
-        logger.debug(LITERAL_BEGIN_DELETEUSER);
+        logger.debug(LITERAL_BEGIN_DELETE + "User");
         userService.deleteUser(id);
-        logger.debug(LITERAL_END_DELETEUSER);
+        logger.debug(LITERAL_END_DELETE + "User");
         return ResponseEntity.noContent().build(); //Me devuelve nada cuando lo borro o la excepción cuando falla
     }
 
@@ -71,24 +73,23 @@ public class UserController {
      */
     @PutMapping("/users/{id}")
     public ResponseEntity<User> modifyUser(@PathVariable long id, @RequestBody User user) throws UserNotFoundException, RollbackException {
-        logger.debug(LITERAL_BEGIN_MODIFYUSER);
+        logger.debug(LITERAL_BEGIN_MODIFY + "User");
         User modifiedUser = userService.modifyUser(id, user);
-        logger.debug(LITERAL_END_MODIFYUSER);
+        logger.debug(LITERAL_END_MODIFY + "User");
         return ResponseEntity.status(HttpStatus.OK).body(modifiedUser);
 
     }
 
     /**
-     *
      * ResponseEntity: Para devolver una respuesta con los datos y el código de estado de forma explícita
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/users"): URL donde se devolverán los datos
      */
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
-        logger.debug(LITERAL_BEGIN_GETUSERS);
+        logger.debug(LITERAL_BEGIN_GET + "Users");
         List<User> users = userService.findAll();
-        logger.debug(LITERAL_END_GETUSERS);
+        logger.debug(LITERAL_END_GET + "Users");
         return ResponseEntity.ok(users);
     }
 
@@ -100,9 +101,9 @@ public class UserController {
      */
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserId(@PathVariable long id) throws UserNotFoundException {
-        logger.debug(LITERAL_BEGIN_GETUSERID);
+        logger.debug(LITERAL_BEGIN_GET + "UserId");
         User user = userService.findById(id); //Recogemos el objeto llamado por el método y creamos el objeto
-        logger.debug(LITERAL_END_GETUSERID);
+        logger.debug(LITERAL_END_GET + "UserId");
         return ResponseEntity.ok(user);
     }
 
@@ -129,14 +130,13 @@ public class UserController {
 //    }
 
     /**
-     * @ExceptionHandler(BusNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso UserNotFoundException.class
+     * @ExceptionHandler(UserNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso UserNotFoundException.class
      * ResponseEntity<?>: Con el interrogante porque no sabe que nos devolver
      * @return
      */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleUserNotFoundException(UserNotFoundException unfe) {
         logger.error(unfe.getMessage(), unfe); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //unfe.printStackTrace(); //Traza por consola del error
         unfe.printStackTrace(); //Para la trazabilidad de la exception
         ErrorMessage errorMessage = new ErrorMessage(404, unfe.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND); // le pasamos el error y el 404 de not found
