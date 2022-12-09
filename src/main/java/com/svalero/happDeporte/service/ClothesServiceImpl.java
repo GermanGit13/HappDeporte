@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.svalero.happDeporte.Util.Constants.PRICE_EQUIPMENT;
+import static com.svalero.happDeporte.Util.Constants.PRICE_SWEATSHIRT;
+
 /** 3) Para implementar la interface de cada service
  * @Service: Para que spring boot sepa que es la capa del service y donde está la lógica
  */
@@ -26,6 +29,8 @@ public class ClothesServiceImpl implements ClothesService{
 
     @Override
     public Clothes addClothes(Clothes clothes) {
+        clothes.setPriceEquipment(PRICE_EQUIPMENT);
+        clothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
         return clothesRepository.save(clothes);
     }
 

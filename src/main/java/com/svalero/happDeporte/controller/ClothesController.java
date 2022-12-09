@@ -3,7 +3,6 @@ package com.svalero.happDeporte.controller;
 import com.svalero.happDeporte.domain.Clothes;
 import com.svalero.happDeporte.exception.ClothesNotFoundException;
 import com.svalero.happDeporte.exception.ErrorMessage;
-import com.svalero.happDeporte.exception.PlayerNotFoundException;
 import com.svalero.happDeporte.service.ClothesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +47,7 @@ public class ClothesController {
         logger.debug(LITERAL_BEGIN_ADD + CLOTHES);
         Clothes newClothes = clothesService.addClothes(clothes);
         logger.debug(LITERAL_END_ADD + CLOTHES);
+
         return new ResponseEntity<>(newClothes, HttpStatus.CREATED);
     }
 
@@ -61,6 +61,7 @@ public class ClothesController {
         logger.debug(LITERAL_BEGIN_DELETE + CLOTHES);
         clothesService.deleteClothes(id);
         logger.debug(LITERAL_END_DELETE + CLOTHES);
+
         return ResponseEntity.noContent().build();
     }
 
@@ -74,6 +75,7 @@ public class ClothesController {
         logger.debug(LITERAL_BEGIN_DELETE + CLOTHES);
         Clothes modifiedClothes = clothesService.modifyClothes(id, clothes);
         logger.debug(LITERAL_END_MODIFY + CLOTHES);
+
         return ResponseEntity.status(HttpStatus.OK).body(modifiedClothes);
     }
 
@@ -87,6 +89,7 @@ public class ClothesController {
         logger.debug(LITERAL_BEGIN_GET + CLOTHES);
         List<Clothes> clothesList = clothesService.findAll();
         logger.debug(LITERAL_END_GET + CLOTHES);
+
         return ResponseEntity.ok(clothesList);
     }
 
@@ -101,6 +104,7 @@ public class ClothesController {
         logger.debug(LITERAL_BEGIN_GET + CLOTHES + "Id");
         Clothes clothes = clothesService.findById(id);
         logger.debug(LITERAL_END_GET + CLOTHES + "Id");
+
         return ResponseEntity.ok(clothes);
     }
 
@@ -119,8 +123,8 @@ public class ClothesController {
     }
 
     /** Capturamos la excepcion para las validaciones y así devolvemos un 400 Bad Request alguien llama a la API de forma incorrecta
-     *@ExceptionHandler(MethodArgumentNotValidException.class) Para capturar la excepcion de las validaciones que hacemos al dar de alta un bus
-     * le pasamos un mesnaje personalizado de ErrorMessage
+     *@ExceptionHandler(MethodArgumentNotValidException.class) Para capturar la excepcion de las validaciones que hacemos al dar de alta un objeto
+     * le pasamos un mensaje personalizado de ErrorMessage
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> handleBadRequestException(MethodArgumentNotValidException manve) {

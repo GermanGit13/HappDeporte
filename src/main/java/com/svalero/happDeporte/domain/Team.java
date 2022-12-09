@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.svalero.happDeporte.Util.Literal.LITERAL_NOT_BLANK;
@@ -38,16 +39,18 @@ public class Team {
     private String competition;
 
     @Column
-    private int cuota;
+    private double cuota;
 
-    @Column
-    private String training;
+    @Column(name ="day_train")
+    private String dayTrain;
 
-    @Column
-    private String schedule;
+    @Column(name = "start_train")
+    private LocalTime startTrain;
+
+    @Column(name = "end_train")
+    private LocalTime endTrain;
 
     @Column//(columnDefinition = "TRUE") //Falla en H2
-    @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private boolean active;
 

@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import static com.svalero.happDeporte.Util.Literal.LITERAL_NOT_BLANK;
@@ -26,17 +27,17 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
+    @Column(name = "team_b")
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private String teamB;
 
-    @Column
+    @Column(name = "marker_a")
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private int markerA;
 
-    @Column
+    @Column(name = "marker_b")
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private int markerB;
@@ -47,15 +48,15 @@ public class Match {
     @Column
     private String location;
 
-    @Column
+    @Column(name = "date_match")
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
     private Date dateMatch;
 
-    @Column
+    @Column(name = "hour_match")
     @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
-    private String hourMatch;
+    private LocalDate hourMatch;
 
     /**
      * Siempre en las N:1 (ManyToOne se define la clave ajena en el lado N (Many)

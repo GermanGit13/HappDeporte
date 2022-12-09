@@ -49,10 +49,10 @@ public class Clothes {
     private int dorsal;
 
     @Column
-    private float priceEquipment;
+    private double priceEquipment;
 
     @Column
-    private float priceSweatshirt;
+    private double priceSweatshirt;
 
     /**
      * Para relacionar un usuario con un pedido de ropa

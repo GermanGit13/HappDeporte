@@ -63,6 +63,7 @@ public class UserController {
         logger.debug(LITERAL_BEGIN_DELETE + USER);
         userService.deleteUser(id);
         logger.debug(LITERAL_END_DELETE + USER);
+
         return ResponseEntity.noContent().build(); //Me devuelve nada cuando lo borro o la excepción cuando falla
     }
 
@@ -76,8 +77,8 @@ public class UserController {
         logger.debug(LITERAL_BEGIN_MODIFY + USER);
         User modifiedUser = userService.modifyUser(id, user);
         logger.debug(LITERAL_END_MODIFY + USER);
-        return ResponseEntity.status(HttpStatus.OK).body(modifiedUser);
 
+        return ResponseEntity.status(HttpStatus.OK).body(modifiedUser);
     }
 
     /**
@@ -90,6 +91,7 @@ public class UserController {
         logger.debug(LITERAL_BEGIN_GET + USER);
         List<User> users = userService.findAll();
         logger.debug(LITERAL_END_GET + USER);
+
         return ResponseEntity.ok(users);
     }
 
@@ -104,6 +106,7 @@ public class UserController {
         logger.debug(LITERAL_BEGIN_GET + USER + "Id");
         User user = userService.findById(id); //Recogemos el objeto llamado por el método y creamos el objeto
         logger.debug(LITERAL_END_GET + USER + "Id");
+
         return ResponseEntity.ok(user);
     }
 
@@ -143,7 +146,7 @@ public class UserController {
     }
 
     /** Capturamos la excepcion para las validaciones y así devolvemos un 400 Bad Request alguien llama a la API de forma incorrecta
-     *@ExceptionHandler(MethodArgumentNotValidException.class) Para capturar la excepcion de las validaciones que hacemos al dar de alta un bus
+     *@ExceptionHandler(MethodArgumentNotValidException.class) Para capturar la excepcion de las validaciones que hacemos al dar de alta un objeto
      * le pasamos un mensaje personalizado de ErrorMessage
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
