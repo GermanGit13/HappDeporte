@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 import static com.svalero.happDeporte.Util.Literal.LITERAL_NOT_BLANK;
@@ -33,13 +34,13 @@ public class Match {
     private String teamB;
 
     @Column(name = "marker_a")
-    @NotBlank(message = LITERAL_NOT_BLANK)
-    @NotNull(message = LITERAL_NOT_NULL)
+//    @NotBlank(message = LITERAL_NOT_BLANK)
+//    @NotNull(message = LITERAL_NOT_NULL)
     private int markerA;
 
     @Column(name = "marker_b")
-    @NotBlank(message = LITERAL_NOT_BLANK)
-    @NotNull(message = LITERAL_NOT_NULL)
+//    @NotBlank(message = LITERAL_NOT_BLANK)
+//    @NotNull(message = LITERAL_NOT_NULL)
     private int markerB;
 
     @Column
@@ -49,14 +50,14 @@ public class Match {
     private String location;
 
     @Column(name = "date_match")
-    @NotBlank(message = LITERAL_NOT_BLANK)
+//    @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
-    private Date dateMatch;
+    private LocalDate dateMatch;
 
     @Column(name = "hour_match")
-    @NotBlank(message = LITERAL_NOT_BLANK)
+//    @NotBlank(message = LITERAL_NOT_BLANK)
     @NotNull(message = LITERAL_NOT_NULL)
-    private LocalDate hourMatch;
+    private LocalTime hourMatch;
 
     /**
      * Siempre en las N:1 (ManyToOne se define la clave ajena en el lado N (Many)
