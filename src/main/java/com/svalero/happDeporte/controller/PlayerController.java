@@ -116,16 +116,14 @@ public class PlayerController {
      * @GetMapping("/players/"): URL donde se devolverán los datos por el código Id
      * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
      */
-//    @GetMapping("/players")
-//    public ResponseEntity<List<Player>> getUserInPlayerAndSexAndActive(@RequestParam (name = "UserInPlayer", defaultValue = "", required = false) long userInPlayer,
-//                                                                       @RequestParam (name = "sex", defaultValue = "", required = false) char sex,
-//                                                                       @RequestParam (name = "active", defaultValue = "", required = false) boolean active) {
-//        logger.debug(("Begin UserId and Sex and Active")); //Indicamos que el método ha sido llamado y lo registramos en el log
-//        List<Player> player = playerService.findByUserInPlayerAndSexAndActive(userInPlayer, sex, active);
-//        logger.debug("End UserId and Sex and Active" );
-//        return ResponseEntity.ok(player);
-//    }
-
+    @GetMapping("/player")
+    public ResponseEntity<List<Player>> getSexAndActive(@RequestParam (name = "dorsal", defaultValue = "", required = false) String dorsal,
+                                                        @RequestParam (name = "active", defaultValue = "", required = false) boolean active) {
+        logger.debug(("Begin Dorsal and Active")); //Indicamos que el método ha sido llamado y lo registramos en el log
+        List<Player> player = playerService.findByDorsalAndActive(dorsal, active);
+        logger.debug("End Dorsal and Active" );
+        return ResponseEntity.ok(player);
+    }
 
     /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found
      * @ExceptionHandler(PlayerNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso PlayerNotFoundException.class

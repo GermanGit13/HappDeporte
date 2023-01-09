@@ -68,6 +68,11 @@ public class PlayerServiceImpl implements PlayerService {
                 .orElseThrow(PlayerNotFoundException::new);
     }
 
+    @Override
+    public List<Player> findByDorsalAndActive(String dorsal, boolean active) {
+        return playerRepository.findByDorsalAndActive(dorsal, active);
+    }
+
     /**
      * Para buscar jugadores por usuario
      * @param user
@@ -82,9 +87,4 @@ public class PlayerServiceImpl implements PlayerService {
 //    public List<Player> findByUser(User user, boolean active) {
 //        return playerRepository.findByUserInPlayerAndActive(user, active);
 //    }
-
-    @Override
-    public List<Player> findByUserInPlayerAndSexAndActive(long userInPlayer, char sex, boolean active) {
-        return playerRepository.findByUserInPlayerAndSexAndActive(userInPlayer, sex, active);
-    }
 }
