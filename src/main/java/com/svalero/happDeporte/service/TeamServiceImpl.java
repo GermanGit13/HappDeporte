@@ -1,8 +1,12 @@
 package com.svalero.happDeporte.service;
 
+import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.domain.Team;
+import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.TeamNotFoundException;
+import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.repository.TeamRepository;
+import com.svalero.happDeporte.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,14 +28,19 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
-    public Team addTeam(Team team) {
-        team.setCuota(QUOTA);
-        teamRepository.save(team);
+    public Team addTeam(Team team, long userId) throws UserNotFoundException {
+        Team newTeam = team; //Creamos un objeto Team
+        User user = userRepository.findById(userId) //Para buscar el usuario si existe
+                //User user = UserRepository.findById(userId) //Para buscar el usuario que existe en la relacion cuando nos viene por objeto y no por URL
+                .orElseThrow(UserNotFoundException::new);
+        newTeam.setUserInTeam(user); //El bus nuevo esta relacionado con la linea x
 
-        return teamRepository.save(team);
+        return teamRepository.save(newTeam); //conectamos con la BBDD mediante el repositorio
     }
 
     @Override

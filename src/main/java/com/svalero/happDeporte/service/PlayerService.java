@@ -12,13 +12,12 @@ import java.util.List;
  */
 public interface PlayerService {
 
-    Player addPlayer(long userInPlayer, Player player) throws UserNotFoundException;
+    Player addPlayer(Player player, long userId) throws UserNotFoundException;
     void deletePlayer(long id) throws PlayerNotFoundException;
     Player modifyPlayer(long id, Player player) throws PlayerNotFoundException;
     List<Player> findAll();
     Player findById(long id) throws PlayerNotFoundException;
-    List<Player> findByUser(User user); // Lista para buscar los Players por user
-    List<Player> findByUser(User user, boolean active); //Lista para buscar jugadores por usuario y activos
-
-//    List<Player> findByUserInPlayerAndSexAndActive(long UserInPlayer, char Sex, boolean Active);
+//    List<Player> findByUser(User user); // Lista para buscar los Players por user
+//    List<Player> findByUser(User user, boolean active); //Lista para buscar jugadores por usuario y activos
+    List<Player> findByUserInPlayerAndSexAndActive(long UserInPlayer, char Sex, boolean Active);
 }

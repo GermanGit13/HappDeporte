@@ -69,12 +69,12 @@ public class User {
     @Size(min = 9)
     private String phone;
 
-    /**
-     * Para relacionar los paradas con las líneas de paradas: Una parada puede tener x lineas y una linea puede tener x paradas
-     * @ManyToMany(mappedBy = "stops"): Para decirle donde lo hemos definido, en que parte se encuentra mapeada, en este caso en la clase Java BusLine --> "private List<BusStop> stops"
-     */
-    @ManyToMany(mappedBy = "users")
-    private List<Team> teams;
+//    /**
+//     * Para relacionar los paradas con las líneas de paradas: Una parada puede tener x lineas y una linea puede tener x paradas
+//     * @ManyToMany(mappedBy = "stops"): Para decirle donde lo hemos definido, en que parte se encuentra mapeada, en este caso en la clase Java BusLine --> "private List<BusStop> stops"
+//     */
+//    @ManyToMany(mappedBy = "users")
+//    private List<Team> teams;
 
     /**
      * Para relacionar los usuarios con los jugadores: Un usuario puede tener x jugadores a creados a su cargo
@@ -84,6 +84,15 @@ public class User {
     @OneToMany(mappedBy = "userInPlayer")
     @JsonBackReference(value = "user_players")
     private List<Player> players;
+
+    /**
+     * Para relacionar los usuarios con los equipos: Un usuario puede entrenar x equipos
+     * @OneToMany(mappedBy = "user"): Indicamos que ya está mapeado en la Clase Team que es donde se genera la columna con id de los usuarios
+     * @JsonBackReference(value = "user_teams"): Es para cortar la recursión infinita, por el lado del usuario para que no se siga mostrando el objeto team completo. Evitar bucle infinito
+     */
+    @OneToMany(mappedBy = "userInTeam")
+    @JsonBackReference(value = "user_teams")
+    private List<Team>  teams;
 
     /**
      * Para relacionar los usuarios con la ropa: Un usuario puede tener x ropa solicitada

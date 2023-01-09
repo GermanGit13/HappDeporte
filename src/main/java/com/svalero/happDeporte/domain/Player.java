@@ -76,7 +76,6 @@ public class Player {
      */
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User userInPlayer;
 
     /**
@@ -86,6 +85,5 @@ public class Player {
      */
     @OneToMany(mappedBy = "playerInClothes")
     @JsonBackReference(value = "player_clothes")
-    @JsonIgnore
     private List<Clothes> clothes;
 }

@@ -24,21 +24,20 @@ public class PlayerServiceImpl implements PlayerService {
      */
     @Autowired
     private PlayerRepository playerRepository;
-
     @Autowired
     private UserRepository userRepository; //Para poder hacerme con el id de un User y asociarlo al player
     @Autowired
     private ModelMapper modelMapper; //Mapear entre listas
 
     @Override
-    public Player addPlayer(long userId, Player player) throws UserNotFoundException {
-        Player newPlayer = new Player(); //Creamos un objeto Player
+    public Player addPlayer(Player player, long userId) throws UserNotFoundException {
+        Player newPlayer = player; //Creamos un objeto Player
         User user = userRepository.findById(userId) //Para buscar el usuario si existe
                 //User user = UserRepository.findById(userId) //Para buscar el usuario que existe en la relacion cuando nos viene por objeto y no por URL
                 .orElseThrow(UserNotFoundException::new);
         newPlayer.setUserInPlayer(user); //El bus nuevo esta relacionado con la linea x
 
-        return playerRepository.save(player); //conectamos con la BBDD mediante el repositorio
+        return playerRepository.save(newPlayer); //conectamos con la BBDD mediante el repositorio
     }
 
     @Override
@@ -74,18 +73,18 @@ public class PlayerServiceImpl implements PlayerService {
      * @param user
      * @return
      */
-    @Override
-    public List<Player> findByUser(User user) {
-        return playerRepository.findByUserInPlayer(user);
-    }
-
-    @Override
-    public List<Player> findByUser(User user, boolean active) {
-        return playerRepository.findByUserInPlayerAndActive(user, active);
-    }
-
 //    @Override
-//    public List<Player> findByUserInPlayerAndSexAndActive(long userInPlayer, char sex, boolean active) {
-//        return playerRepository.findByUserInPlayerAndSexAndActive(userInPlayer, sex, active);
+//    public List<Player> findByUser(User user) {
+//        return playerRepository.findByUserInPlayer(user);
 //    }
+//
+//    @Override
+//    public List<Player> findByUser(User user, boolean active) {
+//        return playerRepository.findByUserInPlayerAndActive(user, active);
+//    }
+
+    @Override
+    public List<Player> findByUserInPlayerAndSexAndActive(long userInPlayer, char sex, boolean active) {
+        return playerRepository.findByUserInPlayerAndSexAndActive(userInPlayer, sex, active);
+    }
 }

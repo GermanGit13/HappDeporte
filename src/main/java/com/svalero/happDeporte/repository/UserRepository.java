@@ -27,5 +27,4 @@ public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
 
     List<User> findByRolAndAndCoach(String rol, boolean coach);
-
 }

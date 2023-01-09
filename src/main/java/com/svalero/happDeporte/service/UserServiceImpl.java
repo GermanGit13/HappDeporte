@@ -1,7 +1,11 @@
 package com.svalero.happDeporte.service;
 
+import com.svalero.happDeporte.domain.Player;
+import com.svalero.happDeporte.domain.Team;
 import com.svalero.happDeporte.domain.User;
+import com.svalero.happDeporte.exception.TeamNotFoundException;
 import com.svalero.happDeporte.exception.UserNotFoundException;
+import com.svalero.happDeporte.repository.TeamRepository;
 import com.svalero.happDeporte.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +27,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private TeamRepository teamRepository;
+    @Autowired
     private ModelMapper modelMapper; //Mapear entre listas
 
     @Override
     public User addUser(User user) {
         return userRepository.save(user); //conectamos con la BBDD mediante el repositorio
     }
+
 
     @Override
     public void deleteUser(long id) throws UserNotFoundException {

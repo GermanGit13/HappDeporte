@@ -2,7 +2,9 @@ package com.svalero.happDeporte.service;
 
 import com.svalero.happDeporte.domain.Team;
 import com.svalero.happDeporte.exception.TeamNotFoundException;
+import com.svalero.happDeporte.exception.UserNotFoundException;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /** 2) Capa donde va a estar la lógica, tendremos una interface por cada clase Java del domain
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public interface TeamService {
 
-    Team addTeam(Team team);
+    Team addTeam(Team team, @Valid long userId) throws UserNotFoundException;
     void deleteTeam(long id) throws TeamNotFoundException;
     Team modifyTeam(long id, Team newTeam) throws TeamNotFoundException;
     List<Team> findAll();

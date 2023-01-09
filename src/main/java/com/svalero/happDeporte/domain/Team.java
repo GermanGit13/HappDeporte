@@ -61,11 +61,22 @@ public class Team {
      *             joinColumns = @JoinColumn(name = "team_id"), ----> "Con una columna compuesta por el id de los equipos" "Clase en la que estamos"
      *             inverseJoinColumns = @JoinColumn(name = "user_id")) ----> "Con una columna compuesta por el id de usuarios" "El otro lado de las clases"
      */
-    @ManyToMany
-    @JoinTable(name = "train",
-            joinColumns = @JoinColumn(name = "team_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> users;
+//    @ManyToMany
+//    @JoinTable(name = "train",
+//            joinColumns = @JoinColumn(name = "team_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id"))
+//    private List<User> users;
+
+
+    /**
+     * Siempre en las N:1 (ManyToOne se define la clave ajena en el lado N (Many)
+     * Para relacionar un jugador con un usuario (Padre o Tutor)
+     * @ManyToOne: Muchos jugadores asociados a un usuario N:1
+     * @JoinColumn(name = "user_id") como queremos que se llame la tabla de la relación N:1
+     */
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User userInTeam;
 
     /**
      * Para relacionar los equipos con los partidos: Un partido puede tener x equipos
