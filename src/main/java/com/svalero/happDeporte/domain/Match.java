@@ -67,5 +67,5 @@ public class Match {
      */
     @ManyToOne
     @JoinColumn(name = "team_id")
-    private User teamInMatch;
+    private Team teamInMatch;
 }

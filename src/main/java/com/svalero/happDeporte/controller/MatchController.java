@@ -2,9 +2,11 @@ package com.svalero.happDeporte.controller;
 
 
 import com.svalero.happDeporte.domain.Match;
+import com.svalero.happDeporte.domain.Team;
 import com.svalero.happDeporte.exception.ErrorMessage;
 import com.svalero.happDeporte.exception.MatchNotFoundException;
 import com.svalero.happDeporte.exception.TeamNotFoundException;
+import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.service.MatchService;
 
 import org.slf4j.Logger;
@@ -34,7 +36,6 @@ public class MatchController {
     /**
      * Llamamos al MatchService el cual llama al MatchRepository y a su vez este llama a la BBDD
      */
-
     @Autowired
     private MatchService matchService;
     private final Logger logger = LoggerFactory.getLogger(MatchController.class);
@@ -45,14 +46,14 @@ public class MatchController {
      * @RequestBody: Los datos van en el cuerpo de la llamada como codificados
      * @Valid Para decir que valide los campos a la hora de añadir un nuevo objeto,  los campos los definidos en el domain de que forma no pueden ser introducidos o dejados en blanco por ejemplo en la BBDD
      */
-    @PostMapping("/matches")
+    @PostMapping("/teams/{teamId}/matches")
     @Validated
-    public ResponseEntity<Match> addMatch(@Valid @RequestBody Match match) {
-        logger.debug(LITERAL_BEGIN_ADD + MATCH);
-        Match newMatch = matchService.addMatch(match);
-        logger.debug(LITERAL_END_ADD + MATCH);
-
-        return new ResponseEntity<>(newMatch, HttpStatus.CREATED);
+    public ResponseEntity<Match> addMatch(@Valid @PathVariable long teamId, @RequestBody Match match) throws TeamNotFoundException {
+        logger.debug(LITERAL_BEGIN_ADD + TEAM); //Indicamos que el método ha sido llamado y lo registramos en el log
+        Match newMatch = matchService.addMatch(match, teamId);
+        logger.debug(LITERAL_END_ADD + PLAYER); //Indicamos que el método ha sido llamado y lo registramos en el log
+        //return ResponseEntity.status(200).body(newPlayer); Opcion a mano le pasamos el código y los datos del Objeto creado
+        return new ResponseEntity<>(newMatch, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
 
     /**
