@@ -94,16 +94,16 @@ public class User {
     @JsonBackReference(value = "user_teams")
     private List<Team>  teams;
 
-    /**
-     * Para relacionar los usuarios con la ropa: Un usuario puede tener x ropa solicitada
-     * @OneToMany(mappedBy = "user"): Indicamos que ya está mapeado en la Clase Clothes que es donde se genera la columna con id de los usuarios
-     * @JsonBackReference(value = "user_clothes"): Es para cortar la recursión infinita, por el lado del usuario para que no se siga mostrando el objeto player completo. Evitar bucle infinito
-     */
-    @OneToMany(mappedBy = "userInClothes")
-    @JsonBackReference(value = "user_clothes")
-    private List<Clothes> clothes;
-
-//    public boolean isCoach() {
-//        return coach;
-//    }
+//    /**
+//     * Para relacionar los usuarios con la ropa: Un usuario puede tener x ropa solicitada
+//     * @OneToMany(mappedBy = "user"): Indicamos que ya está mapeado en la Clase Clothes que es donde se genera la columna con id de los usuarios
+//     * @JsonBackReference(value = "user_clothes"): Es para cortar la recursión infinita, por el lado del usuario para que no se siga mostrando el objeto player completo. Evitar bucle infinito
+//     */
+//    @OneToMany(mappedBy = "userInClothes")
+//    @JsonBackReference(value = "user_clothes")
+//    private List<Clothes> clothes;
+//
+////    public boolean isCoach() {
+////        return coach;
+////    }
 }

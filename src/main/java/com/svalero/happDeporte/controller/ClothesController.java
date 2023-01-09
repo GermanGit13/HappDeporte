@@ -1,8 +1,12 @@
 package com.svalero.happDeporte.controller;
 
 import com.svalero.happDeporte.domain.Clothes;
+import com.svalero.happDeporte.domain.Match;
+import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.exception.ClothesNotFoundException;
 import com.svalero.happDeporte.exception.ErrorMessage;
+import com.svalero.happDeporte.exception.PlayerNotFoundException;
+import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.service.ClothesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,15 +45,25 @@ public class ClothesController {
      * @RequestBody: Los datos van en el cuerpo de la llamada como codificados
      * @Valid Para decir que valide los campos a la hora de añadir un nuevo objeto,  los campos los definidos en el domain de que forma no pueden ser introducidos o dejados en blanco por ejemplo en la BBDD
      */
+    @PostMapping("/players/{playerId}/clothes")
+    @Validated
+    public ResponseEntity<Clothes> addClothes(@Valid @PathVariable long playerId, @RequestBody Clothes clothes) throws PlayerNotFoundException {
+        logger.debug(LITERAL_BEGIN_ADD + CLOTHES);
+        Clothes newClothes = clothesService.addClothes(clothes, playerId);
+        logger.debug(LITERAL_END_ADD + CLOTHES);
+
+        return new ResponseEntity<>(newClothes, HttpStatus.CREATED);
+    }
     @PostMapping("/clothes")
     @Validated
-    public ResponseEntity<Clothes> addClothes(@Valid @RequestBody Clothes clothes) {
+    public ResponseEntity<Clothes> addClothes(@Valid @RequestBody Clothes clothes) throws PlayerNotFoundException {
         logger.debug(LITERAL_BEGIN_ADD + CLOTHES);
         Clothes newClothes = clothesService.addClothes(clothes);
         logger.debug(LITERAL_END_ADD + CLOTHES);
 
         return new ResponseEntity<>(newClothes, HttpStatus.CREATED);
     }
+
 
     /**
      * ResponseEntity<Void>: Vacio, solo tiene código de estado

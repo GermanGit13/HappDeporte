@@ -1,8 +1,11 @@
 package com.svalero.happDeporte.service;
 
 import com.svalero.happDeporte.domain.Clothes;
+import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.exception.ClothesNotFoundException;
+import com.svalero.happDeporte.exception.PlayerNotFoundException;
 import com.svalero.happDeporte.repository.ClothesRepository;
+import com.svalero.happDeporte.repository.PlayerRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,14 +28,53 @@ public class ClothesServiceImpl implements ClothesService{
     @Autowired
     private ClothesRepository clothesRepository;
     @Autowired
+    private PlayerRepository playerRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
+
+    @Override
+    public Clothes addClothes(Clothes clothes, long playerId) throws PlayerNotFoundException {
+
+        clothes.setPriceEquipment(PRICE_EQUIPMENT);
+        clothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
+        Player player = playerRepository.findById(playerId) //Para buscar el jugador si existe
+                .orElseThrow(PlayerNotFoundException::new);
+        clothes.setPlayerInClothes(player); //El bus nuevo esta relacionado con la linea x
+
+        return clothesRepository.save(clothes); //conectamos con la BBDD mediante el repositorio
+    }
 
     @Override
     public Clothes addClothes(Clothes clothes) {
         clothes.setPriceEquipment(PRICE_EQUIPMENT);
         clothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
+
         return clothesRepository.save(clothes);
     }
+
+//    @Override
+//    public Clothes addClothes(Clothes clothes) throws UserNotFoundException, PlayerNotFoundException {
+////        User user = userRepository.findById(clothes.getUserInClothes())
+////                .orElseThrow(UserNotFoundException::new);
+//
+//
+//        Player player = playerRepository.findById(clothes.getPlayerInClothes())
+//                        .orElseThrow(PlayerNotFoundException::new);
+////
+////        clothes.setUserInClothes(user);
+//        clothes.setPlayerInClothes(player);
+//        clothes.setPriceEquipment(PRICE_EQUIPMENT);
+//        clothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
+//        return clothesRepository.save(clothes);
+//    }
+
+//    @Override
+//    public Clothes addClothes(Clothes clothes) {
+//        clothes.setPriceEquipment(PRICE_EQUIPMENT);
+//        clothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
+//        return clothesRepository.save(clothes);
+//    }
 
     @Override
     public void deleteClothes(long id) throws ClothesNotFoundException {

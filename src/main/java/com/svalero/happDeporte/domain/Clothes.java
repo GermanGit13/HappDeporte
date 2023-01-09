@@ -55,15 +55,6 @@ public class Clothes {
     private double priceSweatshirt;
 
     /**
-     * Para relacionar un usuario con un pedido de ropa
-     * @ManyToOne: Muchos pedidos asociados a un usuario N:1
-     * @JoinColumn(name = "user_id") como queremos que se llame la tabla de la relación N:1
-     */
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User userInClothes;
-
-    /**
      * Para relacionar un jugador con un pedido de ropa
      * @ManyToOne: Muchos pedidos asociados a un jugador N:1
      * @JoinColumn(name = "player_id") como queremos que se llame la tabla de la relación N:1
@@ -71,4 +62,14 @@ public class Clothes {
     @ManyToOne
     @JoinColumn(name = "player_id")
     private Player playerInClothes;
+
+
+//    /**
+//     * Para relacionar un usuario con un pedido de ropa
+//     * @ManyToOne: Muchos pedidos asociados a un usuario N:1
+//     * @JoinColumn(name = "user_id") como queremos que se llame la tabla de la relación N:1
+//     */
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private User userInClothes;
 }

@@ -1,7 +1,6 @@
 package com.svalero.happDeporte.repository;
 
 import com.svalero.happDeporte.domain.User;
-import com.svalero.happDeporte.exception.UserNotFoundException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
