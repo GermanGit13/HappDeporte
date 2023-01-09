@@ -1,8 +1,11 @@
 package com.svalero.happDeporte.service;
 
 import com.svalero.happDeporte.domain.Player;
+import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.PlayerNotFoundException;
+import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.repository.PlayerRepository;
+import com.svalero.happDeporte.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +24,20 @@ public class PlayerServiceImpl implements PlayerService {
      */
     @Autowired
     private PlayerRepository playerRepository;
+
+    @Autowired
+    private UserRepository userRepository; //Para poder hacerme con el id de un User y asociarlo al player
     @Autowired
     private ModelMapper modelMapper; //Mapear entre listas
 
     @Override
-    public Player addPlayer(Player player) {
+    public Player addPlayer(long userId, Player player) throws UserNotFoundException {
+        Player newPlayer = new Player(); //Creamos un objeto Player
+        User user = userRepository.findById(userId) //Para buscar el usuario si existe
+                //User user = UserRepository.findById(userId) //Para buscar el usuario que existe en la relacion cuando nos viene por objeto y no por URL
+                .orElseThrow(UserNotFoundException::new);
+        newPlayer.setUserInPlayer(user); //El bus nuevo esta relacionado con la linea x
+
         return playerRepository.save(player); //conectamos con la BBDD mediante el repositorio
     }
 
@@ -55,6 +67,21 @@ public class PlayerServiceImpl implements PlayerService {
     public Player findById(long id) throws PlayerNotFoundException {
         return playerRepository.findById(id)
                 .orElseThrow(PlayerNotFoundException::new);
+    }
+
+    /**
+     * Para buscar jugadores por usuario
+     * @param user
+     * @return
+     */
+    @Override
+    public List<Player> findByUser(User user) {
+        return playerRepository.findByUserInPlayer(user);
+    }
+
+    @Override
+    public List<Player> findByUser(User user, boolean active) {
+        return playerRepository.findByUserInPlayerAndActive(user, active);
     }
 
 //    @Override

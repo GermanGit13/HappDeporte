@@ -4,6 +4,7 @@ import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.ErrorMessage;
 import com.svalero.happDeporte.exception.PlayerNotFoundException;
+import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.service.PlayerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,15 +40,15 @@ public class PlayerController {
 
     /**
      * ResponseEntity<Player>: Devolvemos el objeto y un 201
-     * @PostMapping("/players"): Método para dar de alta en la BBDD players
+     * @PostMapping("/users"): Método para dar de alta en la BBDD players
      * @RequestBody: Los datos van en el cuerpo de la llamada como codificados
      * @Valid Para decir que valide los campos a la hora de añadir un nuevo objeto,  los campos los definidos en el domain de que forma no pueden ser introducidos o dejados en blanco por ejemplo en la BBDD
      */
-    @PostMapping("/players")
-    @Validated
-    public ResponseEntity<Player> addPlayer(@Valid @RequestBody Player player) {
+    @PostMapping("/users/{userId}/players")
+//    @Validated
+    public ResponseEntity<Player> addPlayer( @PathVariable long userId, @RequestBody Player player) throws UserNotFoundException {
         logger.debug(LITERAL_BEGIN_ADD + PLAYER); //Indicamos que el método ha sido llamado y lo registramos en el log
-        Player newPlayer = playerService.addPlayer(player);
+        Player newPlayer = playerService.addPlayer(userId, player);
         logger.debug(LITERAL_END_ADD + PLAYER); //Indicamos que el método ha sido llamado y lo registramos en el log
         //return ResponseEntity.status(200).body(newPlayer); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newPlayer, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
