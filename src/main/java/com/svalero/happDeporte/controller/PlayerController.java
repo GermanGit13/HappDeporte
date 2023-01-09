@@ -1,6 +1,7 @@
 package com.svalero.happDeporte.controller;
 
 import com.svalero.happDeporte.domain.Player;
+import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.ErrorMessage;
 import com.svalero.happDeporte.exception.PlayerNotFoundException;
 import com.svalero.happDeporte.service.PlayerService;
@@ -108,6 +109,21 @@ public class PlayerController {
 
         return ResponseEntity.ok(player);
     }
+
+    /**
+     * Buscar por tres campos
+     * @GetMapping("/players/"): URL donde se devolverán los datos por el código Id
+     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
+     */
+//    @GetMapping("/players")
+//    public ResponseEntity<List<Player>> getUserInPlayerAndSexAndActive(@RequestParam (name = "UserInPlayer", defaultValue = "", required = false) long userInPlayer,
+//                                                                       @RequestParam (name = "sex", defaultValue = "", required = false) char sex,
+//                                                                       @RequestParam (name = "active", defaultValue = "", required = false) boolean active) {
+//        logger.debug(("Begin UserId and Sex and Active")); //Indicamos que el método ha sido llamado y lo registramos en el log
+//        List<Player> player = playerService.findByUserInPlayerAndSexAndActive(userInPlayer, sex, active);
+//        logger.debug("End UserId and Sex and Active" );
+//        return ResponseEntity.ok(player);
+//    }
 
 
     /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found

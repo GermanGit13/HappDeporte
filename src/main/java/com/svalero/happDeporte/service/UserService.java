@@ -17,4 +17,8 @@ public interface UserService {
     List<User> findAll();
     User findByUsername(String username);
     User findById(long id) throws UserNotFoundException;
+
+    List<User> findByRol(String rol);
+
+    List<User> findByRolAndAndCoach(String rol, boolean coach);
 }

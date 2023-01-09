@@ -15,4 +15,6 @@ public interface PlayerService {
     Player modifyPlayer(long id, Player player) throws PlayerNotFoundException;
     List<Player> findAll();
     Player findById(long id) throws PlayerNotFoundException;
+
+//    List<Player> findByUserInPlayerAndSexAndActive(long UserInPlayer, char Sex, boolean Active);
 }

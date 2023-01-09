@@ -4,7 +4,6 @@ import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.repository.UserRepository;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +70,16 @@ public class UserServiceImpl implements UserService {
     public User findById(long id) throws UserNotFoundException {
         return userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public List<User> findByRol(String rol) {
+        return userRepository.findByRol(rol);
+    }
+
+    @Override
+    public List<User> findByRolAndAndCoach(String rol, boolean coach) {
+        return userRepository.findByRolAndAndCoach(rol, coach);
     }
 
     //TODO revisar la excepción

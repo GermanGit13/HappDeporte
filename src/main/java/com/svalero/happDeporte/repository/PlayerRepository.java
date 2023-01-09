@@ -20,6 +20,8 @@ public interface PlayerRepository extends CrudRepository<Player, Long> {
      */
 
     List<Player> findAll();
+//    List<Player> findByUserInPlayerAndSexAndActive(long userInPlayer, char sex, boolean active);
+
 //    List<Player> findByDni();
 //    List<Player> findByUserInPlayer();
 

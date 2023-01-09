@@ -56,4 +56,9 @@ public class PlayerServiceImpl implements PlayerService {
         return playerRepository.findById(id)
                 .orElseThrow(PlayerNotFoundException::new);
     }
+
+//    @Override
+//    public List<Player> findByUserInPlayerAndSexAndActive(long userInPlayer, char sex, boolean active) {
+//        return playerRepository.findByUserInPlayerAndSexAndActive(userInPlayer, sex, active);
+//    }
 }
