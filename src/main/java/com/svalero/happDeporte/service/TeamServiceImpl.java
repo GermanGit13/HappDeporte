@@ -70,4 +70,19 @@ public class TeamServiceImpl implements TeamService {
         return teamRepository.findById(id)
                 .orElseThrow(TeamNotFoundException::new);
     }
+
+    @Override
+    public List<Team> findByCategory(String category) {
+        return teamRepository.findByCategory(category);
+    }
+
+    @Override
+    public List<Team> findByCategoryAndCompetition(String category, String competition) {
+        return teamRepository.findByCategoryAndCompetition(category, competition);
+    }
+
+    @Override
+    public List<Team> findByCategoryAndCompetitionAndActive(String category, String competition, boolean active) {
+        return teamRepository.findByCategoryAndCompetitionAndActive(category, competition, active);
+    }
 }

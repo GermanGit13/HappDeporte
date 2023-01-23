@@ -19,4 +19,7 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
      * Query Methods: Métodos de las sentencias SQL con el nombre ya resuelve la consulta
      */
     List<Team> findAll();
+    List<Team> findByCategory(String category);
+    List<Team> findByCategoryAndCompetition(String category, String competition);
+    List<Team> findByCategoryAndCompetitionAndActive(String category, String competition, boolean active);
 }

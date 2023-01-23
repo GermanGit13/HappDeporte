@@ -2,7 +2,9 @@ package com.svalero.happDeporte.controller;
 
 import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.domain.Team;
+import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.ErrorMessage;
+import com.svalero.happDeporte.exception.PlayerNotFoundException;
 import com.svalero.happDeporte.exception.TeamNotFoundException;
 import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.service.TeamService;
@@ -97,11 +99,25 @@ public class TeamController {
      * @GetMapping("/teams"): URL donde se devolverán los datos
      */
     @GetMapping("/teams")
-    public ResponseEntity<List<Team>> findAll() {
-        logger.debug(LITERAL_BEGIN_GET + TEAM);
-        List<Team> teams = teamService.findAll();
-        logger.debug(LITERAL_END_GET + TEAM);
+    public ResponseEntity<Object> getTeams(@RequestParam (name = "category", defaultValue = "", required = false) String category,
+                                           @RequestParam (name = "competition", defaultValue = "", required = false) String competition,
+                                           @RequestParam (name = "active", defaultValue = "", required = false) String  active) {
 
+        logger.debug(LITERAL_BEGIN_GET + TEAM);
+        boolean activeNew = Boolean.parseBoolean(active);
+
+        if (category.equals("") && competition.equals("") && active.equals("")) {
+            logger.debug(LITERAL_END_GET + TEAM);
+            return ResponseEntity.ok(teamService.findAll());
+        } else if (competition.equals("") && active.equals("") ) {
+            logger.debug(LITERAL_END_GET + TEAM);
+            return ResponseEntity.ok(teamService.findByCategory(category));
+        } else if (active.equals("")) {
+            logger.debug(LITERAL_END_GET + TEAM);
+            return ResponseEntity.ok(teamService.findByCategoryAndCompetition(category, competition));
+        }
+        logger.debug(LITERAL_END_GET + TEAM);
+        List<Team> teams = teamService.findByCategoryAndCompetitionAndActive(category, competition, activeNew);
         return ResponseEntity.ok(teams);
     }
 

@@ -17,4 +17,7 @@ public interface TeamService {
     Team modifyTeam(long id, Team newTeam) throws TeamNotFoundException;
     List<Team> findAll();
     Team findById(long id) throws TeamNotFoundException;
+    List<Team> findByCategory(String category);
+    List<Team> findByCategoryAndCompetition(String category, String competition);
+    List<Team> findByCategoryAndCompetitionAndActive(String category, String competition, boolean active);
 }
