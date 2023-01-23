@@ -35,7 +35,7 @@ public class MatchServiceImpl implements MatchService{
 
     @Override
     public Match addMatch(Match match, long teamId) throws TeamNotFoundException {
-        Match newMatch = match; //Creamos un objeto Player
+        Match newMatch = match; //Creamos un objeto Match
         Team team = teamRepository.findById(teamId) //Para buscar el usuario si existe
                 //User user = UserRepository.findById(userId) //Para buscar el usuario que existe en la relacion cuando nos viene por objeto y no por URL
                 .orElseThrow(TeamNotFoundException::new);

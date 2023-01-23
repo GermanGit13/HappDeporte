@@ -1,7 +1,6 @@
 package com.svalero.happDeporte.controller;
 
 import com.svalero.happDeporte.domain.Player;
-import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.ErrorMessage;
 import com.svalero.happDeporte.exception.PlayerNotFoundException;
 import com.svalero.happDeporte.exception.UserNotFoundException;
@@ -87,14 +86,14 @@ public class PlayerController {
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/players"): URL donde se devolverán los datos
      */
-    @GetMapping("/players")
-    public ResponseEntity<List<Player>> getPlayers() {
-        logger.debug(LITERAL_BEGIN_GET + PLAYER);
-        List<Player> players = playerService.findAll();
-        logger.debug(LITERAL_END_GET + PLAYER);
-
-        return ResponseEntity.ok(players);
-    }
+//    @GetMapping("/players")
+//    public ResponseEntity<List<Player>> getPlayers() {
+//        logger.debug(LITERAL_BEGIN_GET + PLAYER);
+//        List<Player> players = playerService.findAll();
+//        logger.debug(LITERAL_END_GET + PLAYER);
+//
+//        return ResponseEntity.ok(players);
+//    }
 
     /**
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
@@ -113,67 +112,106 @@ public class PlayerController {
 
     /**
      * Buscar por tres campos
+     *
      * @GetMapping("/players/"): URL donde se devolverán los datos por el código Id
      * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
      */
-    @GetMapping("/player")
-    public ResponseEntity<List<Player>> getSexAndActive(@RequestParam (name = "dorsal", defaultValue = "", required = false) String dorsal,
-                                                        @RequestParam (name = "active", defaultValue = "", required = false) boolean active) {
-        logger.debug(("Begin Dorsal and Active")); //Indicamos que el método ha sido llamado y lo registramos en el log
-        List<Player> player = playerService.findByDorsalAndActive(dorsal, active);
-        logger.debug("End Dorsal and Active" );
-        return ResponseEntity.ok(player);
+    @GetMapping("/players")
+    public ResponseEntity<Object> getDorsalAndActive(@RequestParam (name = "userInPlayer", defaultValue = "", required = false) String userInPlayer,
+                                                     @RequestParam (name = "name", defaultValue = "", required = false) String name,
+                                                     @RequestParam (name = "active", defaultValue = "", required = false) String  active) throws PlayerNotFoundException {
+        logger.debug("End User and Name and Active");
+        Long userId = Long.parseLong(userInPlayer);
+        boolean activeNew = Boolean.parseBoolean(active);
+
+        if (userInPlayer.equals("") && name.equals("") && active.equals("")) {
+            logger.debug("End User and Name and Active");
+            return ResponseEntity.ok(playerService.findAll());
+        } else if (name.equals("") && active.equals("") ) {
+            logger.debug("End User and Name and Active");
+            return ResponseEntity.ok(playerService.findByUserInPlayer(userId));
+        } else if (active.equals("")) {
+            logger.debug("End User and Name and Active");
+            return ResponseEntity.ok(playerService.findByUserInPlayerAndName(userId, name));
+        }
+        logger.debug("End User and Name and Active");
+        List<Player> players = playerService.findByUserInPlayerAndNameAndActive(userId, name, activeNew);
+        return ResponseEntity.ok(players);
     }
 
-    /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found
-     * @ExceptionHandler(PlayerNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso PlayerNotFoundException.class
-     * ResponseEntity<?>: Con el interrogante porque no sabe que nos devolver
-     * @return
-     */
-    @ExceptionHandler(PlayerNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handlePlayerNotFoundException(PlayerNotFoundException pnfe) {
-        logger.error(pnfe.getMessage(), pnfe); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //unfe.printStackTrace(); //Traza por consola del error
-        pnfe.printStackTrace(); //Para la trazabilidad de la exception
-        ErrorMessage errorMessage = new ErrorMessage(404, pnfe.getMessage());
-        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND); // le pasamos el error y el 404 de not found
-    }
+//    /**
+//     * JPQL
+//     */
+//    @GetMapping("/players")
+//    public ResponseEntity<List<Player>> getAllPlayersActive(@RequestParam (name = "active", defaultValue = "", required = false) boolean active) {
+//        logger.debug(("Begin Active")); //Indicamos que el método ha sido llamado y lo registramos en el log
+//        List<Player> player = playerService.getAllPlayersActive(active);
+//        logger.debug("Active");
+//        return ResponseEntity.ok(player);
+//    }
 
-    /** Capturamos la excepcion para las validaciones y así devolvemos un 400 Bad Request alguien llama a la API de forma incorrecta
-     *@ExceptionHandler(MethodArgumentNotValidException.class) Para capturar la excepcion de las validaciones que hacemos al dar de alta un objeto
-     * le pasamos un mesnaje personalizado de ErrorMessage
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorMessage> handleBadRequestException(MethodArgumentNotValidException manve) {
-        logger.error(manve.getMessage(), manve); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        manve.printStackTrace(); //Para la trazabilidad de la exception
-        /**
-         * Código que extrae que campos no han pasado la validación
+//    /**
+//     * Buscar por NativeQuery
+//     * @GetMapping("/players/"): URL donde se devolverán los datos por el código Id
+//     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
+//     */
+//    @GetMapping("/player")
+//    public ResponseEntity<List<Player>> getSearchPlayer(@RequestParam (name = "search", defaultValue = "", required = false) String search) {
+//        logger.debug(("Begin Name and Active")); //Indicamos que el método ha sido llamado y lo registramos en el log
+//        List<Player> player = playerService.searchPlayer(search);
+//        logger.debug("End Name and Active" );
+//        return ResponseEntity.ok(player);
+//    }
+
+        /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found
+         * @ExceptionHandler(PlayerNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso PlayerNotFoundException.class
+         * ResponseEntity<?>: Con el interrogante porque no sabe que nos devolver
+         * @return
          */
-        Map<String, String> errors = new HashMap<>(); //Montamos un Map de errores
-        manve.getBindingResult().getAllErrors().forEach(error -> { //para la exception manve recorremos todos los campos
-            String fieldName = ((FieldError) error).getField(); //Extraemos con getField el nombre del campo que no ha pasado la validación
-            String message = error.getDefaultMessage(); // y el mensaje asociado
-            errors.put(fieldName, message);
-        });
-        /**
-         * FIN Código que extrae que campos no han pasado la validación
+        @ExceptionHandler(PlayerNotFoundException.class)
+        public ResponseEntity<ErrorMessage> handlePlayerNotFoundException (PlayerNotFoundException pnfe){
+            logger.error(pnfe.getMessage(), pnfe); //Mandamos la traza de la exception al log, con su mensaje y su traza
+            //unfe.printStackTrace(); //Traza por consola del error
+            pnfe.printStackTrace(); //Para la trazabilidad de la exception
+            ErrorMessage errorMessage = new ErrorMessage(404, pnfe.getMessage());
+            return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND); // le pasamos el error y el 404 de not found
+        }
+
+        /** Capturamos la excepcion para las validaciones y así devolvemos un 400 Bad Request alguien llama a la API de forma incorrecta
+         *@ExceptionHandler(MethodArgumentNotValidException.class) Para capturar la excepcion de las validaciones que hacemos al dar de alta un objeto
+         * le pasamos un mesnaje personalizado de ErrorMessage
          */
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ErrorMessage> handleBadRequestException (MethodArgumentNotValidException manve){
+            logger.error(manve.getMessage(), manve); //Mandamos la traza de la exception al log, con su mensaje y su traza
+            manve.printStackTrace(); //Para la trazabilidad de la exception
+            /**
+             * Código que extrae que campos no han pasado la validación
+             */
+            Map<String, String> errors = new HashMap<>(); //Montamos un Map de errores
+            manve.getBindingResult().getAllErrors().forEach(error -> { //para la exception manve recorremos todos los campos
+                String fieldName = ((FieldError) error).getField(); //Extraemos con getField el nombre del campo que no ha pasado la validación
+                String message = error.getDefaultMessage(); // y el mensaje asociado
+                errors.put(fieldName, message);
+            });
+            /**
+             * FIN Código que extrae que campos no han pasado la validación
+             */
 
-        ErrorMessage errorMessage = new ErrorMessage(400, "Bad Request", errors); //Podemos pasarle código y mensaje o añadir los códigos de error del Map sacamos los campos que han fallado
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST); // le pasamos el error y el 400 de not found
-    }
+            ErrorMessage errorMessage = new ErrorMessage(400, "Bad Request", errors); //Podemos pasarle código y mensaje o añadir los códigos de error del Map sacamos los campos que han fallado
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST); // le pasamos el error y el 400 de not found
+        }
 
-    /**
-     * Lo usamos para contralar las excepciones en general para pillar los errors 500
-     * @param exception
-     * @return
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> handleException(Exception exception) {
-        logger.error(exception.getMessage(), exception); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //exception.printStackTrace(); //Para la trazabilidad de la exception
-        ErrorMessage errorMessage = new ErrorMessage(500, "Internal Server Error"); //asi no damos pistas de como está programa como si pasaba usando e.getMessage()
-        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR); // le pasamos el error y el 500 error en el servidor no controlado, no sé que ha pasado jajaja
-    }
+        /**
+         * Lo usamos para contralar las excepciones en general para pillar los errors 500
+         * @param exception
+         * @return
+         */
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ErrorMessage> handleException (Exception exception){
+            logger.error(exception.getMessage(), exception); //Mandamos la traza de la exception al log, con su mensaje y su traza
+            //exception.printStackTrace(); //Para la trazabilidad de la exception
+            ErrorMessage errorMessage = new ErrorMessage(500, "Internal Server Error"); //asi no damos pistas de como está programa como si pasaba usando e.getMessage()
+            return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR); // le pasamos el error y el 500 error en el servidor no controlado, no sé que ha pasado jajaja
+        }
 }

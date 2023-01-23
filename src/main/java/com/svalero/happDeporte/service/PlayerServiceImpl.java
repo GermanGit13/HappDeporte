@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /** 3) Para implementar la interface de cada service
  * @Service: Para que spring boot sepa que es la capa del service y donde está la lógica
@@ -68,23 +69,31 @@ public class PlayerServiceImpl implements PlayerService {
                 .orElseThrow(PlayerNotFoundException::new);
     }
 
+    /**
+     * Para buscar jugadores por usuario
+     */
     @Override
-    public List<Player> findByDorsalAndActive(String dorsal, boolean active) {
-        return playerRepository.findByDorsalAndActive(dorsal, active);
+    public List<Player> findByUserInPlayer(long userInPlayer) {
+        Optional<User> user = userRepository.findById(userInPlayer);
+        return playerRepository.findByUserInPlayer(user);
     }
 
     /**
-     * Para buscar jugadores por usuario
-     * @param user
-     * @return
+     * Para buscar jugadores por usuario y nombre
      */
-//    @Override
-//    public List<Player> findByUser(User user) {
-//        return playerRepository.findByUserInPlayer(user);
-//    }
-//
-//    @Override
-//    public List<Player> findByUser(User user, boolean active) {
-//        return playerRepository.findByUserInPlayerAndActive(user, active);
-//    }
+    @Override
+    public Object findByUserInPlayerAndName(long userInPlayer, String name) throws PlayerNotFoundException {
+        Optional<User> user = userRepository.findById(userInPlayer);
+        return playerRepository.findByUserInPlayerAndName(user, name);
+    }
+
+    /**
+     * Para buscar jugadores por usuario, nombre y active
+     */
+    @Override
+    public List<Player> findByUserInPlayerAndNameAndActive(long userInPlayer, String name, boolean active) throws PlayerNotFoundException {
+        Optional<User> user = userRepository.findById(userInPlayer);
+        return playerRepository.findByUserInPlayerAndNameAndActive(user, name, active);
+    }
+
 }

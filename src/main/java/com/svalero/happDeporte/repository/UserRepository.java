@@ -1,6 +1,7 @@
 package com.svalero.happDeporte.repository;
 
 import com.svalero.happDeporte.domain.User;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -26,4 +27,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
 
     List<User> findByRolAndAndCoach(String rol, boolean coach);
+
 }

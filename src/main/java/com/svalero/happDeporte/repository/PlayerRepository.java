@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /** 1) Son los métodos que conectan con la BBDD
  * @Repository para decirle que es un DAO y que extiende de CrudRepository
@@ -21,10 +22,25 @@ public interface PlayerRepository extends CrudRepository<Player, Long> {
      */
 
     List<Player> findAll();
-    List<Player> findByUserInPlayer(User user); //Para poder recibir el objeto User
+    List<Player> findByUserInPlayer(Optional<User> user); //Para poder recibir el objeto User
+    List<Player> findByUserInPlayerAndName(Optional<User> user, String name); //Para poder recibir el objeto User
+    List<Player> findByUserInPlayerAndNameAndActive(Optional<User> user, String name, boolean active);
 
-    List<Player> findByDorsalAndActive(String dorsal, boolean active);
 
+//    /**
+//     * JPQL
+//     */
+//    @Query("SELECT p FROM Player p WHERE p.active = :paramActive")
+//    List<Player> getAllPlayersActive(@Param("paramActive") boolean active); //devuelve una lista por nombre y apellido
+//
+//    /**
+//     * nativeQuery
+//     */
+//    @Query( value = "SELECT * FROM players p WHERE p.name = : name", nativeQuery = true)
+//    Player searchName(@Param("name") String name);
+
+//    @Query(value = "SELECT * FROM players WHERE players.name LIKE %:search% OR players.surname LIKE %:search%", nativeQuery = true)
+//    List<Player> searchPlayer(@Param("search") String search);
 //    List<Player> findByUserInPlayerAndActive(User user, boolean active);
 //    List<Player> findByUserInPlayer();
 //    List<Player> findByDni();
