@@ -2,7 +2,9 @@ package com.svalero.happDeporte.repository;
 
 import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.domain.User;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,6 +28,11 @@ public interface PlayerRepository extends CrudRepository<Player, Long> {
     List<Player> findByUserInPlayerAndName(Optional<User> user, String name); //Para poder recibir el objeto User y buscar por nombre
     List<Player> findByUserInPlayerAndNameAndActive(Optional<User> user, String name, boolean active); //Para poder recibir el objeto User, buscar por nombre y active
 
+    /**
+     * nativeQuery
+     */
+    @Query(value = "SELECT * FROM  \"players\" WHERE \"players\".\"active\" = :paramActive ORDER BY \"players\".\"sex\"", nativeQuery = true)
+    List<Player> findSexOrder(@Param("paramActive") boolean active);
 
 //    /**
 //     * JPQL
@@ -33,11 +40,7 @@ public interface PlayerRepository extends CrudRepository<Player, Long> {
 //    @Query("SELECT p FROM Player p WHERE p.active = :paramActive")
 //    List<Player> getAllPlayersActive(@Param("paramActive") boolean active); //devuelve una lista por nombre y apellido
 //
-//    /**
-//     * nativeQuery
-//     */
-//    @Query( value = "SELECT * FROM players p WHERE p.name = : name", nativeQuery = true)
-//    Player searchName(@Param("name") String name);
+
 
 //    @Query(value = "SELECT * FROM players WHERE players.name LIKE %:search% OR players.surname LIKE %:search%", nativeQuery = true)
 //    List<Player> searchPlayer(@Param("search") String search);

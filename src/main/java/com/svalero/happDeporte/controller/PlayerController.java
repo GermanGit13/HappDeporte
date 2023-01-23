@@ -139,29 +139,24 @@ public class PlayerController {
         return ResponseEntity.ok(players);
     }
 
-//    /**
-//     * JPQL
-//     */
-//    @GetMapping("/players")
-//    public ResponseEntity<List<Player>> getAllPlayersActive(@RequestParam (name = "active", defaultValue = "", required = false) boolean active) {
-//        logger.debug(("Begin Active")); //Indicamos que el método ha sido llamado y lo registramos en el log
-//        List<Player> player = playerService.getAllPlayersActive(active);
-//        logger.debug("Active");
-//        return ResponseEntity.ok(player);
-//    }
+    /**
+     * Buscar por NativeQuery
+     * @GetMapping("/players/"): URL donde se devolverán los datos por el código Id
+     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
+     */
+    @GetMapping("/player")
+    public ResponseEntity<List<Player>> getPlayerSexOrder(@RequestParam (name = "active", defaultValue = "", required = false) String active) {
+        logger.debug((LITERAL_BEGIN_GET + PLAYER)); //Indicamos que el método ha sido llamado y lo registramos en el log
+        boolean activeNew = Boolean.parseBoolean(active);
 
-//    /**
-//     * Buscar por NativeQuery
-//     * @GetMapping("/players/"): URL donde se devolverán los datos por el código Id
-//     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
-//     */
-//    @GetMapping("/player")
-//    public ResponseEntity<List<Player>> getSearchPlayer(@RequestParam (name = "search", defaultValue = "", required = false) String search) {
-//        logger.debug(("Begin Name and Active")); //Indicamos que el método ha sido llamado y lo registramos en el log
-//        List<Player> player = playerService.searchPlayer(search);
-//        logger.debug("End Name and Active" );
-//        return ResponseEntity.ok(player);
-//    }
+        if (active.equals("")) {
+            logger.debug(LITERAL_END_GET + PLAYER );
+            return ResponseEntity.ok(playerService.findAll());
+        }
+        List<Player> players = playerService.findSexOrder(activeNew);
+        logger.debug(LITERAL_END_GET + PLAYER );
+        return ResponseEntity.ok(players);
+    }
 
         /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found
          * @ExceptionHandler(PlayerNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso PlayerNotFoundException.class

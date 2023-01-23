@@ -18,8 +18,8 @@ public interface PlayerService {
     Player findById(long id) throws PlayerNotFoundException;
     List<Player> findByUserInPlayer(long UserInPlayer) throws PlayerNotFoundException;
     Object findByUserInPlayerAndName(long UserInPlayer, String name) throws  PlayerNotFoundException;
-
     List<Player> findByUserInPlayerAndNameAndActive(long userInPlayer, String name, boolean active) throws PlayerNotFoundException;
+    List<Player> findSexOrder(boolean active);
 
 
 //    /**
