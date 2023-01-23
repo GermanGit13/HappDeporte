@@ -23,8 +23,8 @@ public interface PlayerRepository extends CrudRepository<Player, Long> {
 
     List<Player> findAll();
     List<Player> findByUserInPlayer(Optional<User> user); //Para poder recibir el objeto User
-    List<Player> findByUserInPlayerAndName(Optional<User> user, String name); //Para poder recibir el objeto User
-    List<Player> findByUserInPlayerAndNameAndActive(Optional<User> user, String name, boolean active);
+    List<Player> findByUserInPlayerAndName(Optional<User> user, String name); //Para poder recibir el objeto User y buscar por nombre
+    List<Player> findByUserInPlayerAndNameAndActive(Optional<User> user, String name, boolean active); //Para poder recibir el objeto User, buscar por nombre y active
 
 
 //    /**

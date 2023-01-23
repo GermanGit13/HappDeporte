@@ -111,13 +111,13 @@ public class PlayerController {
     }
 
     /**
+     * Buscar todos los jugadores
      * Buscar por tres campos
-     *
      * @GetMapping("/players/"): URL donde se devolverán los datos por el código Id
      * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
      */
     @GetMapping("/players")
-    public ResponseEntity<Object> getDorsalAndActive(@RequestParam (name = "userInPlayer", defaultValue = "", required = false) String userInPlayer,
+    public ResponseEntity<Object> getPlayers(@RequestParam (name = "userInPlayer", defaultValue = "", required = false) String userInPlayer,
                                                      @RequestParam (name = "name", defaultValue = "", required = false) String name,
                                                      @RequestParam (name = "active", defaultValue = "", required = false) String  active) throws PlayerNotFoundException {
         logger.debug("End User and Name and Active");

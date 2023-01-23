@@ -1,7 +1,9 @@
 package com.svalero.happDeporte.controller;
 
+import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.ErrorMessage;
+import com.svalero.happDeporte.exception.PlayerNotFoundException;
 import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.service.UserService;
 import org.slf4j.Logger;
@@ -82,16 +84,31 @@ public class UserController {
     }
 
     /**
-     * ResponseEntity: Para devolver una respuesta con los datos y el código de estado de forma explícita
-     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
-     * @GetMapping("/users"): URL donde se devolverán los datos
+     * Buscar todos los usuarios
+     * Buscar por tres campos
+     * @GetMapping("/users/"): URL donde se devolverán los datos por el código Id
+     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
      */
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers() {
-        logger.debug(LITERAL_BEGIN_GET + USER);
-        List<User> users = userService.findAll();
-        logger.debug(LITERAL_END_GET + USER);
+    public ResponseEntity<Object> getUsers(@RequestParam (name = "name", defaultValue = "", required = false) String name,
+                                             @RequestParam (name = "rol", defaultValue = "", required = false) String rol,
+                                             @RequestParam (name = "coach", defaultValue = "", required = false) String  coach) throws PlayerNotFoundException {
 
+        logger.debug(LITERAL_BEGIN_GET + USER);
+        boolean coachNew = Boolean.parseBoolean(coach);
+
+        if (name.equals("") && rol.equals("") && coach.equals("")) {
+            logger.debug(LITERAL_END_GET + USER);
+            return ResponseEntity.ok(userService.findAll());
+        } else if (rol.equals("") && coach.equals("") ) {
+            logger.debug(LITERAL_END_GET + USER);
+            return ResponseEntity.ok(userService.findByName(name));
+        } else if (coach.equals("")) {
+            logger.debug(LITERAL_END_GET + USER);
+            return ResponseEntity.ok(userService.findByNameAndRol(name, rol));
+        }
+        logger.debug(LITERAL_END_GET + USER);
+        List<User> users = userService.findByNameAndRolAndAndCoach(name, rol, coachNew);
         return ResponseEntity.ok(users);
     }
 
@@ -145,19 +162,19 @@ public class UserController {
 //        return ResponseEntity.ok(user);
 //    }
 
-    /**
-     * Buscar por dos campos
-     * @GetMapping("/users/id"): URL donde se devolverán los datos por el código Id
-     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
-     */
-    @GetMapping("/user")
-    public ResponseEntity<List<User>> getRolAndCoach(@RequestParam (name = "rol", defaultValue = "", required = false) String rol,
-                                                     @RequestParam (name = "coach", defaultValue = "", required = false) boolean coach) {
-        logger.debug(("Begin Rol and Coach")); //Indicamos que el método ha sido llamado y lo registramos en el log
-        List<User> user = userService.findByRolAndAndCoach(rol, coach);
-        logger.debug("End Rol and Coach" );
-        return ResponseEntity.ok(user);
-    }
+//    /**
+//     * Buscar por dos campos
+//     * @GetMapping("/users/id"): URL donde se devolverán los datos por el código Id
+//     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
+//     */
+//    @GetMapping("/user")
+//    public ResponseEntity<List<User>> getRolAndCoach(@RequestParam (name = "rol", defaultValue = "", required = false) String rol,
+//                                                     @RequestParam (name = "coach", defaultValue = "", required = false) boolean coach) {
+//        logger.debug(("Begin Rol and Coach")); //Indicamos que el método ha sido llamado y lo registramos en el log
+//        List<User> user = userService.findByRolAndAndCoach(rol, coach);
+//        logger.debug("End Rol and Coach" );
+//        return ResponseEntity.ok(user);
+//    }
 
     /**
      * @ExceptionHandler(UserNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso UserNotFoundException.class

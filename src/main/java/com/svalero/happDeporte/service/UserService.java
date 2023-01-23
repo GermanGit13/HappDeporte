@@ -15,9 +15,11 @@ public interface UserService {
     void deleteUser(long id) throws UserNotFoundException;
     User modifyUser(long id, User newUser) throws UserNotFoundException, RollbackException;
     List<User> findAll();
-    User findByUsername(String username);
     User findById(long id) throws UserNotFoundException;
+    User findByUsername(String username);
+    List<User> findByName(String Name);
+    List<User> findByNameAndRol(String name, String rol);
     List<User> findByRol(String rol);
 
-    List<User> findByRolAndAndCoach(String rol, boolean coach);
+    List<User> findByNameAndRolAndAndCoach(String Username, String rol, boolean coach);
 }

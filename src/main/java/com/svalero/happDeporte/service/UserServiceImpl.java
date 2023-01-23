@@ -79,19 +79,30 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    //TODO revisar la excepción
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<User> findByName(String name) {
+        return userRepository.findByName(name);
+    }
+
+    @Override
+    public List<User> findByNameAndRol(String name, String rol) {
+        return userRepository.findByNameAndRol(name, rol);
+    }
+
     @Override
     public List<User> findByRol(String rol) {
         return userRepository.findByRol(rol);
     }
 
     @Override
-    public List<User> findByRolAndAndCoach(String rol, boolean coach) {
-        return userRepository.findByRolAndAndCoach(rol, coach);
-    }
-
-    //TODO revisar la excepción
-    @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public List<User> findByNameAndRolAndAndCoach(String name, String rol, boolean coach) {
+        return userRepository.findByNameAndRolAndAndCoach(name, rol, coach);
     }
 }
