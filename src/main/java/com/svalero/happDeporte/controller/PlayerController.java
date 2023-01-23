@@ -120,21 +120,21 @@ public class PlayerController {
     public ResponseEntity<Object> getPlayers(@RequestParam (name = "userInPlayer", defaultValue = "", required = false) String userInPlayer,
                                                      @RequestParam (name = "name", defaultValue = "", required = false) String name,
                                                      @RequestParam (name = "active", defaultValue = "", required = false) String  active) throws PlayerNotFoundException {
-        logger.debug("End User and Name and Active");
+        logger.debug(LITERAL_BEGIN_GET + PLAYER);
         Long userId = Long.parseLong(userInPlayer);
         boolean activeNew = Boolean.parseBoolean(active);
 
         if (userInPlayer.equals("") && name.equals("") && active.equals("")) {
-            logger.debug("End User and Name and Active");
+            logger.debug(LITERAL_END_GET + PLAYER);
             return ResponseEntity.ok(playerService.findAll());
         } else if (name.equals("") && active.equals("") ) {
-            logger.debug("End User and Name and Active");
+            logger.debug(LITERAL_END_GET + PLAYER);
             return ResponseEntity.ok(playerService.findByUserInPlayer(userId));
         } else if (active.equals("")) {
-            logger.debug("End User and Name and Active");
+            logger.debug(LITERAL_END_GET + PLAYER);
             return ResponseEntity.ok(playerService.findByUserInPlayerAndName(userId, name));
         }
-        logger.debug("End User and Name and Active");
+        logger.debug(LITERAL_END_GET + PLAYER);
         List<Player> players = playerService.findByUserInPlayerAndNameAndActive(userId, name, activeNew);
         return ResponseEntity.ok(players);
     }

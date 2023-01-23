@@ -2,11 +2,9 @@ package com.svalero.happDeporte.controller;
 
 
 import com.svalero.happDeporte.domain.Match;
+import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.domain.Team;
-import com.svalero.happDeporte.exception.ErrorMessage;
-import com.svalero.happDeporte.exception.MatchNotFoundException;
-import com.svalero.happDeporte.exception.TeamNotFoundException;
-import com.svalero.happDeporte.exception.UserNotFoundException;
+import com.svalero.happDeporte.exception.*;
 import com.svalero.happDeporte.service.MatchService;
 
 import org.slf4j.Logger;
@@ -20,6 +18,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,14 +87,29 @@ public class MatchController {
     /**
      * ResponseEntity: Para devolver una respuesta con los datos y el código de estado de forma explícita
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
-     * @GetMapping("/players"): URL donde se devolverán los datos
+     * @GetMapping("/matches"): URL donde se devolverán los datos
      */
     @GetMapping("/matches")
-    public ResponseEntity<List<Match>> findAll() {
+    public ResponseEntity<Object> getMatches(@RequestParam (name = "teamInMatch", defaultValue = "", required = false) String teamInMatch,
+                                             @RequestParam (name = "dateMatch", defaultValue = "", required = false) String dateMatch,
+                                             @RequestParam (name = "hourMatch", defaultValue = "", required = false) String  hourMatch) throws MatchNotFoundException {
         logger.debug(LITERAL_BEGIN_GET + MATCH);
-        List<Match> matches = matchService.findAll();
-        logger.debug(LITERAL_END_GET + MATCH);
 
+//        LocalDate dateMatchNew = LocalDate.parse(dateMatch);
+//        LocalTime hourDateNew = LocalTime.parse(hourMatch);
+
+        if (teamInMatch.equals("") && dateMatch.equals("") && hourMatch.equals("")) {
+            logger.debug(LITERAL_END_GET + MATCH);
+            return ResponseEntity.ok(matchService.findAll());
+        } else if (dateMatch.equals("") && hourMatch.equals("") ) {
+            logger.debug(LITERAL_END_GET + MATCH);
+            return ResponseEntity.ok(matchService.findByTeamInMatch(Long.parseLong(teamInMatch)));
+        } else if (hourMatch.equals("")) {
+            logger.debug(LITERAL_END_GET + MATCH);
+            return ResponseEntity.ok(matchService.findByTeamInMatchAndDateMatch(Long.parseLong(teamInMatch), LocalDate.parse(dateMatch)));
+        }
+        logger.debug(LITERAL_END_GET + MATCH);
+        List<Match> matches = matchService.findByTeamInMatchAndDateMatchAndHourMatch(Long.parseLong(teamInMatch), LocalDate.parse(dateMatch), LocalTime.parse(hourMatch));
         return ResponseEntity.ok(matches);
     }
 
