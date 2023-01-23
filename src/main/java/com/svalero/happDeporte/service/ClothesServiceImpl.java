@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.svalero.happDeporte.Util.Constants.PRICE_EQUIPMENT;
 import static com.svalero.happDeporte.Util.Constants.PRICE_SWEATSHIRT;
@@ -101,5 +102,23 @@ public class ClothesServiceImpl implements ClothesService{
     public Clothes findById(long id) throws ClothesNotFoundException {
         return clothesRepository.findById(id)
                 .orElseThrow(ClothesNotFoundException::new);
+    }
+
+    @Override
+    public List<Clothes> findByPlayerInClothes(long playerInClothes) throws ClothesNotFoundException {
+        Optional<Player> player = playerRepository.findById(playerInClothes);
+        return clothesRepository.findByPlayerInClothes(player);
+    }
+
+    @Override
+    public Object findByPlayerInClothesAndSizeEquipment(long playerInClothes, String sizeEquipment) throws ClothesNotFoundException {
+        Optional<Player> player = playerRepository.findById(playerInClothes);
+        return clothesRepository.findByPlayerInClothesAndSizeEquipment(player, sizeEquipment);
+    }
+
+    @Override
+    public List<Clothes> findByPlayerInClothesAndSizeEquipmentAndDorsal(long playerInClothes, String sizeEquipment, int dorsal) throws ClothesNotFoundException {
+        Optional<Player> player = playerRepository.findById(playerInClothes);
+        return clothesRepository.findByPlayerInClothesAndSizeEquipmentAndDorsal(player, sizeEquipment, dorsal);
     }
 }

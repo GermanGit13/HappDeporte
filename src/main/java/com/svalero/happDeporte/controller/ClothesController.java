@@ -3,10 +3,7 @@ package com.svalero.happDeporte.controller;
 import com.svalero.happDeporte.domain.Clothes;
 import com.svalero.happDeporte.domain.Match;
 import com.svalero.happDeporte.domain.Player;
-import com.svalero.happDeporte.exception.ClothesNotFoundException;
-import com.svalero.happDeporte.exception.ErrorMessage;
-import com.svalero.happDeporte.exception.PlayerNotFoundException;
-import com.svalero.happDeporte.exception.UserNotFoundException;
+import com.svalero.happDeporte.exception.*;
 import com.svalero.happDeporte.service.ClothesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +16,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,12 +98,24 @@ public class ClothesController {
      * @GetMapping("/clothes"): URL donde se devolverán los datos
      */
     @GetMapping("/clothes")
-    public ResponseEntity<List<Clothes>> getClothes() {
+    public ResponseEntity<Object> getClothes(@RequestParam (name = "playerInClothes", defaultValue = "", required = false) String playerInClothes,
+                                             @RequestParam (name = "sizeEquipment", defaultValue = "", required = false) String sizeEquipment,
+                                             @RequestParam (name = "dorsal", defaultValue = "", required = false) String  dorsal) throws ClothesNotFoundException {
         logger.debug(LITERAL_BEGIN_GET + CLOTHES);
-        List<Clothes> clothesList = clothesService.findAll();
-        logger.debug(LITERAL_END_GET + CLOTHES);
 
-        return ResponseEntity.ok(clothesList);
+        if (playerInClothes.equals("") && sizeEquipment.equals("") && dorsal.equals("")) {
+            logger.debug(LITERAL_END_GET + CLOTHES);
+            return ResponseEntity.ok(clothesService.findAll());
+        } else if (sizeEquipment.equals("") && dorsal.equals("") ) {
+            logger.debug(LITERAL_END_GET + CLOTHES);
+            return ResponseEntity.ok(clothesService.findByPlayerInClothes(Long.parseLong(playerInClothes)));
+        } else if (dorsal.equals("")) {
+            logger.debug(LITERAL_END_GET + CLOTHES);
+            return ResponseEntity.ok(clothesService.findByPlayerInClothesAndSizeEquipment(Long.parseLong(playerInClothes), sizeEquipment));
+        }
+        logger.debug(LITERAL_END_GET + CLOTHES);
+        List<Clothes> clothes = clothesService.findByPlayerInClothesAndSizeEquipmentAndDorsal(Long.parseLong(playerInClothes), sizeEquipment, Integer.parseInt(dorsal));
+        return ResponseEntity.ok(clothes);
     }
 
     /**

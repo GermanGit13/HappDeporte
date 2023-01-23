@@ -1,6 +1,7 @@
 package com.svalero.happDeporte.service;
 
 import com.svalero.happDeporte.domain.Clothes;
+import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.exception.ClothesNotFoundException;
 import com.svalero.happDeporte.exception.PlayerNotFoundException;
 import com.svalero.happDeporte.exception.UserNotFoundException;
@@ -19,4 +20,9 @@ public interface ClothesService {
     Clothes modifyClothes(long id, Clothes clothes) throws ClothesNotFoundException;
     List<Clothes> findAll();
     Clothes findById(long id) throws ClothesNotFoundException;
+
+    List<Clothes> findByPlayerInClothes(long playerInClothes) throws ClothesNotFoundException;
+    Object findByPlayerInClothesAndSizeEquipment(long playerInClothes, String sizeEquipment) throws ClothesNotFoundException;
+
+    List<Clothes> findByPlayerInClothesAndSizeEquipmentAndDorsal(long playerInClothes, String sizeEquipment, int dorsal) throws ClothesNotFoundException;
 }
