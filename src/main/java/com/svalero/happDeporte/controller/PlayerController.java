@@ -75,6 +75,7 @@ public class PlayerController {
     @PutMapping("/players/{id}")
     public ResponseEntity<Player> modifyPlayer(@PathVariable long id, @RequestBody Player player) throws PlayerNotFoundException {
         logger.debug(LITERAL_BEGIN_MODIFY + PLAYER);
+        Player player1 = playerService.findById(id);
         Player modifiedPlayer = playerService.modifyPlayer(id, player);
         logger.debug(LITERAL_END_MODIFY + PLAYER);
 
@@ -121,7 +122,6 @@ public class PlayerController {
                                                      @RequestParam (name = "name", defaultValue = "", required = false) String name,
                                                      @RequestParam (name = "active", defaultValue = "", required = false) String  active) throws PlayerNotFoundException {
         logger.debug(LITERAL_BEGIN_GET + PLAYER);
-        Long userId = Long.parseLong(userInPlayer);
         boolean activeNew = Boolean.parseBoolean(active);
 
         if (userInPlayer.equals("") && name.equals("") && active.equals("")) {
@@ -129,13 +129,13 @@ public class PlayerController {
             return ResponseEntity.ok(playerService.findAll());
         } else if (name.equals("") && active.equals("") ) {
             logger.debug(LITERAL_END_GET + PLAYER);
-            return ResponseEntity.ok(playerService.findByUserInPlayer(userId));
+            return ResponseEntity.ok(playerService.findByUserInPlayer(Long.parseLong(userInPlayer)));
         } else if (active.equals("")) {
             logger.debug(LITERAL_END_GET + PLAYER);
-            return ResponseEntity.ok(playerService.findByUserInPlayerAndName(userId, name));
+            return ResponseEntity.ok(playerService.findByUserInPlayerAndName(Long.parseLong(userInPlayer), name));
         }
         logger.debug(LITERAL_END_GET + PLAYER);
-        List<Player> players = playerService.findByUserInPlayerAndNameAndActive(userId, name, activeNew);
+        List<Player> players = playerService.findByUserInPlayerAndNameAndActive(Long.parseLong(userInPlayer), name, activeNew);
         return ResponseEntity.ok(players);
     }
 
@@ -145,18 +145,35 @@ public class PlayerController {
      * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
      */
     @GetMapping("/player")
-    public ResponseEntity<List<Player>> getPlayerSexOrder(@RequestParam (name = "active", defaultValue = "", required = false) String active) {
+    public ResponseEntity<List<Player>> getPlayerSexOrder(@RequestParam (name = "active", defaultValue = "", required = false) String active,
+                                                          @RequestParam(name = "userInPlayer", defaultValue = "", required = false) String userInPlayer) throws PlayerNotFoundException {
         logger.debug((LITERAL_BEGIN_GET + PLAYER)); //Indicamos que el método ha sido llamado y lo registramos en el log
         boolean activeNew = Boolean.parseBoolean(active);
 
-        if (active.equals("")) {
+        if (userInPlayer.equals("")) {
+            List<Player> players = playerService.findSexOrder(activeNew);
             logger.debug(LITERAL_END_GET + PLAYER );
-            return ResponseEntity.ok(playerService.findAll());
+            return ResponseEntity.ok(players);
+        } else if (active.equals("")) {
+            List<Player> players = playerService.findPlayerByUser(Long.parseLong(userInPlayer));
+            logger.debug(LITERAL_END_GET + PLAYER );
+            return ResponseEntity.ok(players);
         }
-        List<Player> players = playerService.findSexOrder(activeNew);
-        logger.debug(LITERAL_END_GET + PLAYER );
-        return ResponseEntity.ok(players);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // le pasamos
     }
+
+//    public ResponseEntity<List<Player>> getPlayerSexOrder(@RequestParam (name = "active", defaultValue = "", required = false) String active) {
+//        logger.debug((LITERAL_BEGIN_GET + PLAYER)); //Indicamos que el método ha sido llamado y lo registramos en el log
+//        boolean activeNew = Boolean.parseBoolean(active);
+//
+//        if (active.equals("")) {
+//            logger.debug(LITERAL_END_GET + PLAYER );
+//            return ResponseEntity.ok(playerService.findAll());
+//        }
+//        List<Player> players = playerService.findSexOrder(activeNew);
+//        logger.debug(LITERAL_END_GET + PLAYER );
+//        return ResponseEntity.ok(players);
+//    }
 
         /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found
          * @ExceptionHandler(PlayerNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso PlayerNotFoundException.class

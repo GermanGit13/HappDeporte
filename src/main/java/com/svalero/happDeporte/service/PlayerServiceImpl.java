@@ -101,4 +101,9 @@ public class PlayerServiceImpl implements PlayerService {
         return playerRepository.findSexOrder(active);
     }
 
+    @Override
+    public List<Player> findPlayerByUser(long userInPlayer) {
+        return playerRepository.findPlayerByUser(userInPlayer);
+    }
+
 }

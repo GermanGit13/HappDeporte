@@ -20,7 +20,7 @@ public interface PlayerService {
     Object findByUserInPlayerAndName(long UserInPlayer, String name) throws  PlayerNotFoundException;
     List<Player> findByUserInPlayerAndNameAndActive(long userInPlayer, String name, boolean active) throws PlayerNotFoundException;
     List<Player> findSexOrder(boolean active);
-
+    List<Player> findPlayerByUser(long userInPlayer);
 
 //    /**
 //     * JPQL

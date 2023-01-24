@@ -1,7 +1,9 @@
 package com.svalero.happDeporte.repository;
 
 import com.svalero.happDeporte.domain.Team;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,4 +24,9 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
     List<Team> findByCategory(String category);
     List<Team> findByCategoryAndCompetition(String category, String competition);
     List<Team> findByCategoryAndCompetitionAndActive(String category, String competition, boolean active);
+    /**
+     * nativeQuery: Buscar Entrenadores por equipos activos ordenados por categoria
+     */
+    @Query(value = "SELECT * FROM  \"teams\" WHERE \"teams\".\"user_id\" = :paramUserInTeam AND \"teams\".\"active\" = :paramActive ORDER BY \"teams\".\"category\"", nativeQuery = true)
+    List<Team> findTeamAndActiveByUserId(@Param("paramUserInTeam") long userInPlayer, @Param("paramActive") boolean active);
 }

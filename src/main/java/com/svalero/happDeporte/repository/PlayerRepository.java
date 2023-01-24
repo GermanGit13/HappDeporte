@@ -29,10 +29,15 @@ public interface PlayerRepository extends CrudRepository<Player, Long> {
     List<Player> findByUserInPlayerAndNameAndActive(Optional<User> user, String name, boolean active); //Para poder recibir el objeto User, buscar por nombre y active
 
     /**
-     * nativeQuery
+     * nativeQuery: Buscar Jugadores Activos ordenados por sexo
      */
     @Query(value = "SELECT * FROM  \"players\" WHERE \"players\".\"active\" = :paramActive ORDER BY \"players\".\"sex\"", nativeQuery = true)
     List<Player> findSexOrder(@Param("paramActive") boolean active);
+    /**
+     * nativeQuery: Buscar Jugadores por Usuario ordenados por name
+     */
+    @Query(value = "SELECT * FROM  \"players\" WHERE \"players\".\"user_id\" = :paramUserInPlayer ORDER BY \"players\".\"name\"", nativeQuery = true)
+    List<Player> findPlayerByUser(@Param("paramUserInPlayer") long userInPlayer);
 
 //    /**
 //     * JPQL

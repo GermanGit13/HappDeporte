@@ -3,6 +3,7 @@ package com.svalero.happDeporte.service;
 import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.domain.Team;
 import com.svalero.happDeporte.domain.User;
+import com.svalero.happDeporte.exception.PlayerNotFoundException;
 import com.svalero.happDeporte.exception.TeamNotFoundException;
 import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.repository.TeamRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.svalero.happDeporte.Util.Constants.QUOTA;
 
@@ -38,7 +40,8 @@ public class TeamServiceImpl implements TeamService {
         User user = userRepository.findById(userId) //Para buscar el usuario si existe
                 //User user = UserRepository.findById(userId) //Para buscar el usuario que existe en la relacion cuando nos viene por objeto y no por URL
                 .orElseThrow(UserNotFoundException::new);
-        newTeam.setUserInTeam(user); //El bus nuevo esta relacionado con la linea x
+        newTeam.setUserInTeam(user); //Para asignarle un entranador
+        newTeam.setCuota(QUOTA); //Le pasamos el importe de la cuota
 
         return teamRepository.save(newTeam); //conectamos con la BBDD mediante el repositorio
     }
@@ -85,4 +88,9 @@ public class TeamServiceImpl implements TeamService {
     public List<Team> findByCategoryAndCompetitionAndActive(String category, String competition, boolean active) {
         return teamRepository.findByCategoryAndCompetitionAndActive(category, competition, active);
     }
+
+    @Override
+    public List<Team> findTeamAndActiveByUserId(long userInTeam, boolean active) {
+            return teamRepository.findTeamAndActiveByUserId(userInTeam, active);
+        }
 }

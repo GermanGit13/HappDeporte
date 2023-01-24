@@ -55,15 +55,6 @@ public class TeamController {
         //return ResponseEntity.status(200).body(newPlayer); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newTeam, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
-//    @PostMapping("/teams")
-//    @Validated
-//    public ResponseEntity<Team> addTeam(@Valid @RequestBody Team team) {
-//        logger.debug(LITERAL_BEGIN_ADD + TEAM);
-//        Team newTeam = teamService.addTeam(team);
-//        logger.debug(LITERAL_END_ADD + TEAM);
-//
-//        return new ResponseEntity<>(newTeam, HttpStatus.CREATED);
-//    }
 
     /**
      * ResponseEntity<Void>: Vacio, solo tiene código de estado
@@ -134,6 +125,25 @@ public class TeamController {
         logger.debug(LITERAL_END_GET + TEAM + "Id");
 
         return ResponseEntity.ok(team);
+    }
+
+    /**
+     * ResponseEntity: Para devolver una respuesta con los datos y el código de estado de forma explícita
+     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
+     * @GetMapping("/teams"): URL donde se devolverán los datos
+     */
+    @GetMapping("/team")
+    public ResponseEntity<List<Team>> getTeamByUser(@RequestParam (name = "userInTeam", defaultValue = "", required = false) String userInTeam,
+                                                    @RequestParam(name = "active", defaultValue = "", required = false) String active) throws TeamNotFoundException {
+        logger.debug((LITERAL_BEGIN_GET + TEAM)); //Indicamos que el método ha sido llamado y lo registramos en el log
+        boolean activeNew = Boolean.parseBoolean(active);
+
+        if (!userInTeam.equals("") && !active.equals("")) {
+            List<Team> teams = teamService.findTeamAndActiveByUserId(Long.parseLong(userInTeam), activeNew);
+            logger.debug(LITERAL_END_GET + TEAM );
+            return ResponseEntity.ok(teams);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // le pasamos
     }
 
     /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found
