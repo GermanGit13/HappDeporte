@@ -21,7 +21,7 @@ public interface MatchService {
     Match addMatch(Match match, long teamId) throws TeamNotFoundException;
 
     void deteteMatch(long id) throws MatchNotFoundException;
-    Match modifyMatch(long id, Match match) throws MatchNotFoundException;
+    Match modifyMatch(long idMatches, long idTeams, Match match) throws MatchNotFoundException, TeamNotFoundException;
     List<Match> findAll();
     Match findById(long id) throws MatchNotFoundException;
 

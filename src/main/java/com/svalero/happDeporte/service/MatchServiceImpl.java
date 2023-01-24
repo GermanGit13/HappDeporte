@@ -51,12 +51,16 @@ public class MatchServiceImpl implements MatchService{
     }
 
     @Override
-    public Match modifyMatch(long id, Match newMatch) throws MatchNotFoundException {
-        Match existingMatch = matchRepository.findById(id)
+    public Match modifyMatch(long idMatches, long idTeams, Match newMatch) throws MatchNotFoundException, TeamNotFoundException {
+        Match existingMatch = matchRepository.findById(idMatches)
                 .orElseThrow(MatchNotFoundException::new);
-        newMatch.setId(id);
+        Team existingTeam = teamRepository.findById(idTeams)
+                        .orElseThrow(TeamNotFoundException::new);
 
         modelMapper.map(newMatch, existingMatch);
+        existingMatch.setId(idMatches);
+        existingMatch.setTeamInMatch(existingTeam);
+
         return matchRepository.save(existingMatch);
     }
 

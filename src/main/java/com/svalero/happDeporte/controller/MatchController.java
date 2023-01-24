@@ -75,10 +75,10 @@ public class MatchController {
      * @PathVariable: Para indicar que el parámetro que le pasamos
      * @RequestBody Player player para pasarle los datos del objeto a modificar
      */
-    @PutMapping("/matches/{id}")
-    public ResponseEntity<Match> modifyMatch(@PathVariable long id, @RequestBody Match match) throws MatchNotFoundException {
+    @PutMapping("/matches/{idMatches}/teams/{idTeams}")
+    public ResponseEntity<Match> modifyMatch(@PathVariable long idMatches, @PathVariable long idTeams, @RequestBody Match match) throws MatchNotFoundException, TeamNotFoundException {
         logger.debug(LITERAL_BEGIN_MODIFY + MATCH);
-        Match modifiedMatch = matchService.modifyMatch(id, match);
+        Match modifiedMatch = matchService.modifyMatch(idMatches, idTeams, match);
         logger.debug(LITERAL_END_MODIFY + MATCH);
 
         return ResponseEntity.status(HttpStatus.OK).body(modifiedMatch);
