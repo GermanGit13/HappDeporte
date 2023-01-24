@@ -71,17 +71,17 @@ public class TeamController {
     }
 
     /**
-     * @PutMapping("/players/{id}"): Método para modificar
+     * @PutMapping("/teams/{idTeam}/users/{idUser}"): Método para modificar pasandole por la URL el idTeam y idUser
      * @PathVariable: Para indicar que el parámetro que le pasamos
-     * @RequestBody Player player para pasarle los datos del objeto a modificar
+     * @RequestBody Team team para pasarle los datos del objeto a modificar
      */
-    @PutMapping("/teams/{id}")
-    public ResponseEntity<Team> modifyTeam(long id, Team team) throws TeamNotFoundException {
+    @PutMapping("/teams/{idTeam}/users/{idUser}")
+    public ResponseEntity<Team> modifyTeam(@PathVariable long idTeam, @PathVariable  long idUser, @RequestBody Team team) throws TeamNotFoundException, UserNotFoundException {
         logger.debug(LITERAL_BEGIN_MODIFY + TEAM);
-        Team modifedTeam = teamService.modifyTeam(id, team);
+        Team modifTeam = teamService.modifyTeam(idTeam, idUser, team);
         logger.debug(LITERAL_END_MODIFY + TEAM);
 
-        return ResponseEntity.status(HttpStatus.OK).body(modifedTeam);
+        return ResponseEntity.status(HttpStatus.OK).body(modifTeam);
     }
 
     /**

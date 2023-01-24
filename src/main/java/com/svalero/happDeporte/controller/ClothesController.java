@@ -83,12 +83,11 @@ public class ClothesController {
      * @PathVariable: Para indicar que el parámetro que le pasamos
      * @RequestBody Player player para pasarle los datos del objeto a modificar
      */
-    @PutMapping("/clothes/{id}")
-    public ResponseEntity<Clothes> modifyClothes(@PathVariable long id, @RequestBody Clothes clothes) throws  ClothesNotFoundException {
+    @PutMapping("/clothes/{idClothes}/players/{idPlayers}")
+    public ResponseEntity<Clothes> modifyClothes(@PathVariable long idClothes, @PathVariable long idPlayers, @RequestBody Clothes clothes) throws  ClothesNotFoundException, PlayerNotFoundException {
         logger.debug(LITERAL_BEGIN_DELETE + CLOTHES);
-        Clothes modifiedClothes = clothesService.modifyClothes(id, clothes);
+        Clothes modifiedClothes = clothesService.modifyClothes(idClothes, idPlayers, clothes);
         logger.debug(LITERAL_END_MODIFY + CLOTHES);
-
         return ResponseEntity.status(HttpStatus.OK).body(modifiedClothes);
     }
 

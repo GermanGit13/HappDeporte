@@ -49,12 +49,15 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Player modifyPlayer(long id, Player newPlayer) throws PlayerNotFoundException {
-        Player existingPlayer = playerRepository.findById(id)
+    public Player modifyPlayer(long idPlayer, long idUser, Player newPlayer) throws PlayerNotFoundException, UserNotFoundException {
+        Player existingPlayer = playerRepository.findById(idPlayer)
                 .orElseThrow(PlayerNotFoundException::new);
-        newPlayer.setId(id); // Para añadirle el id, sino no viene en el cuerpo
+        User existingUser = userRepository.findById(idUser)
+                        .orElseThrow(UserNotFoundException::new);
 
         modelMapper.map(newPlayer, existingPlayer);
+        existingPlayer.setId(idPlayer);
+        existingPlayer.setUserInPlayer(existingUser);
         return playerRepository.save(existingPlayer);
     }
 

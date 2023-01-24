@@ -13,7 +13,7 @@ public interface PlayerService {
 
     Player addPlayer(Player player, long userId) throws UserNotFoundException;
     void deletePlayer(long id) throws PlayerNotFoundException;
-    Player modifyPlayer(long id, Player player) throws PlayerNotFoundException;
+    Player modifyPlayer(long idPlayer, long idUser, Player player) throws PlayerNotFoundException, UserNotFoundException;
     List<Player> findAll();
     Player findById(long id) throws PlayerNotFoundException;
     List<Player> findByUserInPlayer(long UserInPlayer) throws PlayerNotFoundException;

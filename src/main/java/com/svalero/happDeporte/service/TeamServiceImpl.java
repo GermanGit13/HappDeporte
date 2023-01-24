@@ -54,11 +54,22 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team modifyTeam(long id, Team newTeam) throws TeamNotFoundException {
-        Team existingTeam = teamRepository.findById(id)
+    public Team modifyTeam(long idTeam, long idUser, Team newTeam) throws TeamNotFoundException, UserNotFoundException {
+        Team existingTeam = teamRepository.findById(idTeam)
                 .orElseThrow(TeamNotFoundException::new);
-        newTeam.setId(id);
-        modelMapper.map(newTeam, existingTeam);
+        User existingUser = userRepository.findById(idUser)
+                .orElseThrow(UserNotFoundException::new);
+
+//        modelMapper.map(newTeam, existingTeam);
+
+        existingTeam.setUserInTeam(existingUser);
+        existingTeam.setCategory(newTeam.getCategory());
+        existingTeam.setCompetition("Mierda");
+        existingTeam.setDayTrain(newTeam.getDayTrain());
+        existingTeam.setStartTrain(newTeam.getStartTrain());
+        existingTeam.setEndTrain(newTeam.getEndTrain());
+        existingTeam.setActive(newTeam.isActive());
+        existingTeam.setCuota(QUOTA);
 
         return teamRepository.save(existingTeam);
     }

@@ -17,7 +17,7 @@ public interface ClothesService {
 
     Clothes addClothes(Clothes clothes);
     void deleteClothes(long id) throws ClothesNotFoundException;
-    Clothes modifyClothes(long id, Clothes clothes) throws ClothesNotFoundException;
+    Clothes modifyClothes(long idClothes, long idPlayer, Clothes clothes) throws ClothesNotFoundException, PlayerNotFoundException;
     List<Clothes> findAll();
     Clothes findById(long id) throws ClothesNotFoundException;
 

@@ -14,7 +14,7 @@ public interface TeamService {
 
     Team addTeam(Team team, @Valid long userId) throws UserNotFoundException;
     void deleteTeam(long id) throws TeamNotFoundException;
-    Team modifyTeam(long id, Team newTeam) throws TeamNotFoundException;
+    Team modifyTeam(long idTeam, long idUser, Team newTeam) throws TeamNotFoundException, UserNotFoundException;
     List<Team> findAll();
     Team findById(long id) throws TeamNotFoundException;
     List<Team> findByCategory(String category);

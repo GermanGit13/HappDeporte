@@ -85,11 +85,17 @@ public class ClothesServiceImpl implements ClothesService{
     }
 
     @Override
-    public Clothes modifyClothes(long id, Clothes newclothes) throws ClothesNotFoundException {
-        Clothes modifiedClothes = clothesRepository.findById(id)
+    public Clothes modifyClothes(long idClothes, long idPlayer, Clothes newclothes) throws ClothesNotFoundException, PlayerNotFoundException {
+        Clothes modifiedClothes = clothesRepository.findById(idClothes)
                 .orElseThrow(ClothesNotFoundException::new);
-        newclothes.setId(id);
+        Player existPlayer = playerRepository.findById(idPlayer)
+                        .orElseThrow(PlayerNotFoundException::new);
+
         modelMapper.map(newclothes, modifiedClothes);
+        modifiedClothes.setId(idClothes);
+        modifiedClothes.setPlayerInClothes(existPlayer);
+        modifiedClothes.setPriceEquipment(PRICE_EQUIPMENT);
+        modifiedClothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
         return clothesRepository.save(modifiedClothes);
     }
 

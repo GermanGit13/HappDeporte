@@ -72,11 +72,10 @@ public class PlayerController {
      * @PathVariable: Para indicar que el parámetro que le pasamos
      * @RequestBody Player player para pasarle los datos del objeto a modificar
      */
-    @PutMapping("/players/{id}")
-    public ResponseEntity<Player> modifyPlayer(@PathVariable long id, @RequestBody Player player) throws PlayerNotFoundException {
+    @PutMapping("/players/{idPlayer}/users/{idUser}")
+    public ResponseEntity<Player> modifyPlayer(@PathVariable long idPlayer, @PathVariable long idUser, @RequestBody Player player) throws PlayerNotFoundException, UserNotFoundException {
         logger.debug(LITERAL_BEGIN_MODIFY + PLAYER);
-        Player player1 = playerService.findById(id);
-        Player modifiedPlayer = playerService.modifyPlayer(id, player);
+        Player modifiedPlayer = playerService.modifyPlayer(idPlayer, idUser, player);
         logger.debug(LITERAL_END_MODIFY + PLAYER);
 
         return ResponseEntity.status(HttpStatus.OK).body(modifiedPlayer);
