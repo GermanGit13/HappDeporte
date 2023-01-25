@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class Player {
     @Past
 //    @NotBlank(message = LITERAL_NOT_BLANK)
 //    @NotNull(message = LITERAL_NOT_NULL)
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column
     private String allergy;

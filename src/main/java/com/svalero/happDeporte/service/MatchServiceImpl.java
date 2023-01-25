@@ -1,20 +1,19 @@
 package com.svalero.happDeporte.service;
 
 import com.svalero.happDeporte.domain.Match;
-import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.domain.Team;
-import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.MatchNotFoundException;
 import com.svalero.happDeporte.exception.TeamNotFoundException;
-import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.repository.MatchRepository;
 import com.svalero.happDeporte.repository.TeamRepository;
-import com.svalero.happDeporte.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 /** 3) Para implementar la interface de cada service
  * @Service: Para que spring boot sepa que es la capa del service y donde está la lógica
@@ -35,7 +34,7 @@ public class MatchServiceImpl implements MatchService{
 
     @Override
     public Match addMatch(Match match, long teamId) throws TeamNotFoundException {
-        Match newMatch = match; //Creamos un objeto Player
+        Match newMatch = match; //Creamos un objeto Match
         Team team = teamRepository.findById(teamId) //Para buscar el usuario si existe
                 //User user = UserRepository.findById(userId) //Para buscar el usuario que existe en la relacion cuando nos viene por objeto y no por URL
                 .orElseThrow(TeamNotFoundException::new);
@@ -52,12 +51,16 @@ public class MatchServiceImpl implements MatchService{
     }
 
     @Override
-    public Match modifyMatch(long id, Match newMatch) throws MatchNotFoundException {
-        Match existingMatch = matchRepository.findById(id)
+    public Match modifyMatch(long idMatches, long idTeams, Match newMatch) throws MatchNotFoundException, TeamNotFoundException {
+        Match existingMatch = matchRepository.findById(idMatches)
                 .orElseThrow(MatchNotFoundException::new);
-        newMatch.setId(id);
+        Team existingTeam = teamRepository.findById(idTeams)
+                        .orElseThrow(TeamNotFoundException::new);
 
         modelMapper.map(newMatch, existingMatch);
+        existingMatch.setId(idMatches);
+        existingMatch.setTeamInMatch(existingTeam);
+
         return matchRepository.save(existingMatch);
     }
 
@@ -70,5 +73,23 @@ public class MatchServiceImpl implements MatchService{
     public Match findById(long id) throws MatchNotFoundException {
         return matchRepository.findById(id)
                 .orElseThrow(MatchNotFoundException::new);
+    }
+
+    @Override
+    public List<Match> findByTeamInMatch(long teamInMatch) throws MatchNotFoundException {
+        Optional<Team> team = teamRepository.findById(teamInMatch);
+        return matchRepository.findByTeamInMatch(team);
+    }
+
+    @Override
+    public List<Match> findByTeamInMatchAndDateMatch(long teamInMatch, LocalDate dateMatch) throws MatchNotFoundException {
+        Optional<Team> team = teamRepository.findById(teamInMatch);
+        return matchRepository.findByTeamInMatchAndDateMatch(team, dateMatch);
+    }
+
+    @Override
+    public List<Match> findByTeamInMatchAndDateMatchAndHourMatch(long teamInMatch, LocalDate dateMatch, LocalTime hourMatch) throws MatchNotFoundException{
+        Optional<Team> team = teamRepository.findById(teamInMatch);
+        return matchRepository.findByTeamInMatchAndDateMatchAndHourMatch(team, dateMatch, hourMatch);
     }
 }

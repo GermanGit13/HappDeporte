@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.svalero.happDeporte.Util.Constants.PRICE_EQUIPMENT;
 import static com.svalero.happDeporte.Util.Constants.PRICE_SWEATSHIRT;
@@ -53,29 +54,6 @@ public class ClothesServiceImpl implements ClothesService{
         return clothesRepository.save(clothes);
     }
 
-//    @Override
-//    public Clothes addClothes(Clothes clothes) throws UserNotFoundException, PlayerNotFoundException {
-////        User user = userRepository.findById(clothes.getUserInClothes())
-////                .orElseThrow(UserNotFoundException::new);
-//
-//
-//        Player player = playerRepository.findById(clothes.getPlayerInClothes())
-//                        .orElseThrow(PlayerNotFoundException::new);
-////
-////        clothes.setUserInClothes(user);
-//        clothes.setPlayerInClothes(player);
-//        clothes.setPriceEquipment(PRICE_EQUIPMENT);
-//        clothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
-//        return clothesRepository.save(clothes);
-//    }
-
-//    @Override
-//    public Clothes addClothes(Clothes clothes) {
-//        clothes.setPriceEquipment(PRICE_EQUIPMENT);
-//        clothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
-//        return clothesRepository.save(clothes);
-//    }
-
     @Override
     public void deleteClothes(long id) throws ClothesNotFoundException {
         Clothes clothes = clothesRepository.findById(id)
@@ -84,11 +62,17 @@ public class ClothesServiceImpl implements ClothesService{
     }
 
     @Override
-    public Clothes modifyClothes(long id, Clothes newclothes) throws ClothesNotFoundException {
-        Clothes modifiedClothes = clothesRepository.findById(id)
+    public Clothes modifyClothes(long idClothes, long idPlayer, Clothes newclothes) throws ClothesNotFoundException, PlayerNotFoundException {
+        Clothes modifiedClothes = clothesRepository.findById(idClothes)
                 .orElseThrow(ClothesNotFoundException::new);
-        newclothes.setId(id);
+        Player existPlayer = playerRepository.findById(idPlayer)
+                        .orElseThrow(PlayerNotFoundException::new);
+
         modelMapper.map(newclothes, modifiedClothes);
+        modifiedClothes.setId(idClothes);
+        modifiedClothes.setPlayerInClothes(existPlayer);
+        modifiedClothes.setPriceEquipment(PRICE_EQUIPMENT);
+        modifiedClothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
         return clothesRepository.save(modifiedClothes);
     }
 
@@ -101,5 +85,23 @@ public class ClothesServiceImpl implements ClothesService{
     public Clothes findById(long id) throws ClothesNotFoundException {
         return clothesRepository.findById(id)
                 .orElseThrow(ClothesNotFoundException::new);
+    }
+
+    @Override
+    public List<Clothes> findByPlayerInClothes(long playerInClothes) throws ClothesNotFoundException {
+        Optional<Player> player = playerRepository.findById(playerInClothes);
+        return clothesRepository.findByPlayerInClothes(player);
+    }
+
+    @Override
+    public Object findByPlayerInClothesAndSizeEquipment(long playerInClothes, String sizeEquipment) throws ClothesNotFoundException {
+        Optional<Player> player = playerRepository.findById(playerInClothes);
+        return clothesRepository.findByPlayerInClothesAndSizeEquipment(player, sizeEquipment);
+    }
+
+    @Override
+    public List<Clothes> findByPlayerInClothesAndSizeEquipmentAndDorsal(long playerInClothes, String sizeEquipment, int dorsal) throws ClothesNotFoundException {
+        Optional<Player> player = playerRepository.findById(playerInClothes);
+        return clothesRepository.findByPlayerInClothesAndSizeEquipmentAndDorsal(player, sizeEquipment, dorsal);
     }
 }

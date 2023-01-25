@@ -1,12 +1,7 @@
 package com.svalero.happDeporte.controller;
 
 import com.svalero.happDeporte.domain.Clothes;
-import com.svalero.happDeporte.domain.Match;
-import com.svalero.happDeporte.domain.Player;
-import com.svalero.happDeporte.exception.ClothesNotFoundException;
-import com.svalero.happDeporte.exception.ErrorMessage;
-import com.svalero.happDeporte.exception.PlayerNotFoundException;
-import com.svalero.happDeporte.exception.UserNotFoundException;
+import com.svalero.happDeporte.exception.*;
 import com.svalero.happDeporte.service.ClothesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +59,6 @@ public class ClothesController {
         return new ResponseEntity<>(newClothes, HttpStatus.CREATED);
     }
 
-
     /**
      * ResponseEntity<Void>: Vacio, solo tiene código de estado
      * @DeleteMapping("/clothes/{id}"): Método para dar borrar por id
@@ -84,12 +78,11 @@ public class ClothesController {
      * @PathVariable: Para indicar que el parámetro que le pasamos
      * @RequestBody Player player para pasarle los datos del objeto a modificar
      */
-    @PutMapping("/clothes/{id}")
-    public ResponseEntity<Clothes> modifyClothes(@PathVariable long id, @RequestBody Clothes clothes) throws  ClothesNotFoundException {
+    @PutMapping("/clothes/{idClothes}/players/{idPlayers}")
+    public ResponseEntity<Clothes> modifyClothes(@PathVariable long idClothes, @PathVariable long idPlayers, @RequestBody Clothes clothes) throws  ClothesNotFoundException, PlayerNotFoundException {
         logger.debug(LITERAL_BEGIN_DELETE + CLOTHES);
-        Clothes modifiedClothes = clothesService.modifyClothes(id, clothes);
+        Clothes modifiedClothes = clothesService.modifyClothes(idClothes, idPlayers, clothes);
         logger.debug(LITERAL_END_MODIFY + CLOTHES);
-
         return ResponseEntity.status(HttpStatus.OK).body(modifiedClothes);
     }
 
@@ -99,19 +92,31 @@ public class ClothesController {
      * @GetMapping("/clothes"): URL donde se devolverán los datos
      */
     @GetMapping("/clothes")
-    public ResponseEntity<List<Clothes>> getClothes() {
+    public ResponseEntity<Object> getClothes(@RequestParam (name = "playerInClothes", defaultValue = "", required = false) String playerInClothes,
+                                             @RequestParam (name = "sizeEquipment", defaultValue = "", required = false) String sizeEquipment,
+                                             @RequestParam (name = "dorsal", defaultValue = "", required = false) String  dorsal) throws ClothesNotFoundException {
         logger.debug(LITERAL_BEGIN_GET + CLOTHES);
-        List<Clothes> clothesList = clothesService.findAll();
-        logger.debug(LITERAL_END_GET + CLOTHES);
 
-        return ResponseEntity.ok(clothesList);
+        if (playerInClothes.equals("") && sizeEquipment.equals("") && dorsal.equals("")) {
+            logger.debug(LITERAL_END_GET + CLOTHES);
+            return ResponseEntity.ok(clothesService.findAll());
+        } else if (sizeEquipment.equals("") && dorsal.equals("") ) {
+            logger.debug(LITERAL_END_GET + CLOTHES);
+            return ResponseEntity.ok(clothesService.findByPlayerInClothes(Long.parseLong(playerInClothes)));
+        } else if (dorsal.equals("")) {
+            logger.debug(LITERAL_END_GET + CLOTHES);
+            return ResponseEntity.ok(clothesService.findByPlayerInClothesAndSizeEquipment(Long.parseLong(playerInClothes), sizeEquipment));
+        }
+        logger.debug(LITERAL_END_GET + CLOTHES);
+        List<Clothes> clothes = clothesService.findByPlayerInClothesAndSizeEquipmentAndDorsal(Long.parseLong(playerInClothes), sizeEquipment, Integer.parseInt(dorsal));
+        return ResponseEntity.ok(clothes);
     }
 
     /**
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/clothes/id"): URL donde se devolverán los datos por el código Id
      * @PathVariable: Para indicar que el parámetro que le pasamos en el String es que debe ir en la URL
-     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
+     * throws ClothesNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
      */
     @GetMapping("/clothes/{id}")
     public ResponseEntity<Clothes> getClothesId(@PathVariable long id) throws ClothesNotFoundException {
@@ -130,7 +135,6 @@ public class ClothesController {
     @ExceptionHandler(ClothesNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleClothesNotFoundException(ClothesNotFoundException cnfe) {
         logger.error(cnfe.getMessage(), cnfe); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //cnfe.printStackTrace(); //Traza por consola del error
         cnfe.printStackTrace(); //Para la trazabilidad de la exception
         ErrorMessage errorMessage = new ErrorMessage(404, cnfe.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND); // le pasamos el error y el 404 de not found
@@ -169,7 +173,7 @@ public class ClothesController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleException(Exception exception) {
         logger.error(exception.getMessage(), exception); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //exception.printStackTrace(); //Para la trazabilidad de la exception
+        exception.printStackTrace(); //Para la trazabilidad de la exception
         ErrorMessage errorMessage = new ErrorMessage(500, "Internal Server Error"); //asi no damos pistas de como está programa como si pasaba usando e.getMessage()
         return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR); // le pasamos el error y el 500 error en el servidor no controlado, no sé que ha pasado jajaja
     }

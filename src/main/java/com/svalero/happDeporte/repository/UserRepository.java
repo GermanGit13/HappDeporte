@@ -1,6 +1,7 @@
 package com.svalero.happDeporte.repository;
 
 import com.svalero.happDeporte.domain.User;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,10 +21,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
      */
 
     List<User> findAll();
-//    User findById(long id) throws UserNotFoundException;
     List<User> findAllByCoach(boolean coach);
-    List<User> findByRol(String rol);
     User findByUsername(String username);
-
-    List<User> findByRolAndAndCoach(String rol, boolean coach);
+    List<User> findByName(String name);
+    List<User> findByRol(String rol);
+    List<User> findByNameAndRol(String name, String rol);
+    List<User> findByNameAndRolAndAndCoach(String Username, String rol, boolean coach);
 }

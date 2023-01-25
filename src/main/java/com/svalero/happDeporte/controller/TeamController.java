@@ -2,7 +2,9 @@ package com.svalero.happDeporte.controller;
 
 import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.domain.Team;
+import com.svalero.happDeporte.domain.User;
 import com.svalero.happDeporte.exception.ErrorMessage;
+import com.svalero.happDeporte.exception.PlayerNotFoundException;
 import com.svalero.happDeporte.exception.TeamNotFoundException;
 import com.svalero.happDeporte.exception.UserNotFoundException;
 import com.svalero.happDeporte.service.TeamService;
@@ -40,7 +42,7 @@ public class TeamController {
 
     /**
      * ResponseEntity<Team>: Devolvemos el objeto y un 201
-     * @PostMapping("/teams"): Método para dar de alta en la BBDD players
+     * @PostMapping("/users/{userId}/teams"): Método para dar de alta en la BBDD players
      * @RequestBody: Los datos van en el cuerpo de la llamada como codificados
      * @Valid Para decir que valide los campos a la hora de añadir un nuevo objeto,  los campos los definidos en el domain de que forma no pueden ser introducidos o dejados en blanco por ejemplo en la BBDD
      */
@@ -50,18 +52,8 @@ public class TeamController {
         logger.debug(LITERAL_BEGIN_ADD + TEAM); //Indicamos que el método ha sido llamado y lo registramos en el log
         Team newTeam = teamService.addTeam(team, userId);
         logger.debug(LITERAL_END_ADD + PLAYER); //Indicamos que el método ha sido llamado y lo registramos en el log
-        //return ResponseEntity.status(200).body(newPlayer); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newTeam, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
-//    @PostMapping("/teams")
-//    @Validated
-//    public ResponseEntity<Team> addTeam(@Valid @RequestBody Team team) {
-//        logger.debug(LITERAL_BEGIN_ADD + TEAM);
-//        Team newTeam = teamService.addTeam(team);
-//        logger.debug(LITERAL_END_ADD + TEAM);
-//
-//        return new ResponseEntity<>(newTeam, HttpStatus.CREATED);
-//    }
 
     /**
      * ResponseEntity<Void>: Vacio, solo tiene código de estado
@@ -78,17 +70,17 @@ public class TeamController {
     }
 
     /**
-     * @PutMapping("/players/{id}"): Método para modificar
+     * @PutMapping("/teams/{idTeam}/users/{idUser}"): Método para modificar pasandole por la URL el idTeam y idUser
      * @PathVariable: Para indicar que el parámetro que le pasamos
-     * @RequestBody Player player para pasarle los datos del objeto a modificar
+     * @RequestBody Team team para pasarle los datos del objeto a modificar
      */
-    @PutMapping("/teams/{id}")
-    public ResponseEntity<Team> modifyTeam(long id, Team team) throws TeamNotFoundException {
+    @PutMapping("/teams/{idTeam}/users/{idUser}")
+    public ResponseEntity<Team> modifyTeam(@PathVariable long idTeam, @PathVariable  long idUser, @RequestBody Team team) throws TeamNotFoundException, UserNotFoundException {
         logger.debug(LITERAL_BEGIN_MODIFY + TEAM);
-        Team modifedTeam = teamService.modifyTeam(id, team);
+        Team modifTeam = teamService.modifyTeam(idTeam, idUser, team);
         logger.debug(LITERAL_END_MODIFY + TEAM);
 
-        return ResponseEntity.status(HttpStatus.OK).body(modifedTeam);
+        return ResponseEntity.status(HttpStatus.OK).body(modifTeam);
     }
 
     /**
@@ -97,11 +89,25 @@ public class TeamController {
      * @GetMapping("/teams"): URL donde se devolverán los datos
      */
     @GetMapping("/teams")
-    public ResponseEntity<List<Team>> findAll() {
-        logger.debug(LITERAL_BEGIN_GET + TEAM);
-        List<Team> teams = teamService.findAll();
-        logger.debug(LITERAL_END_GET + TEAM);
+    public ResponseEntity<Object> getTeams(@RequestParam (name = "category", defaultValue = "", required = false) String category,
+                                           @RequestParam (name = "competition", defaultValue = "", required = false) String competition,
+                                           @RequestParam (name = "active", defaultValue = "", required = false) String  active) {
 
+        logger.debug(LITERAL_BEGIN_GET + TEAM);
+        boolean activeNew = Boolean.parseBoolean(active);
+
+        if (category.equals("") && competition.equals("") && active.equals("")) {
+            logger.debug(LITERAL_END_GET + TEAM);
+            return ResponseEntity.ok(teamService.findAll());
+        } else if (competition.equals("") && active.equals("") ) {
+            logger.debug(LITERAL_END_GET + TEAM);
+            return ResponseEntity.ok(teamService.findByCategory(category));
+        } else if (active.equals("")) {
+            logger.debug(LITERAL_END_GET + TEAM);
+            return ResponseEntity.ok(teamService.findByCategoryAndCompetition(category, competition));
+        }
+        logger.debug(LITERAL_END_GET + TEAM);
+        List<Team> teams = teamService.findByCategoryAndCompetitionAndActive(category, competition, activeNew);
         return ResponseEntity.ok(teams);
     }
 
@@ -109,7 +115,7 @@ public class TeamController {
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/teams/id"): URL donde se devolverán los datos por el código Id
      * @PathVariable: Para indicar que el parámetro que le pasamos en el String es que debe ir en la URL
-     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
+     * throws TeamNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
      */
     @GetMapping("/teams/{id}")
     public ResponseEntity<Team> findById(@PathVariable long id) throws TeamNotFoundException {
@@ -118,6 +124,25 @@ public class TeamController {
         logger.debug(LITERAL_END_GET + TEAM + "Id");
 
         return ResponseEntity.ok(team);
+    }
+
+    /**
+     * ResponseEntity: Para devolver una respuesta con los datos y el código de estado de forma explícita
+     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
+     * @GetMapping("/teams"): URL donde se devolverán los datos
+     */
+    @GetMapping("/team")
+    public ResponseEntity<List<Team>> getTeamByUser(@RequestParam (name = "userInTeam", defaultValue = "", required = false) String userInTeam,
+                                                    @RequestParam(name = "active", defaultValue = "", required = false) String active) throws TeamNotFoundException {
+        logger.debug((LITERAL_BEGIN_GET + TEAM));
+        boolean activeNew = Boolean.parseBoolean(active);
+
+        if (!userInTeam.equals("") && !active.equals("")) {
+            List<Team> teams = teamService.findTeamAndActiveByUserId(Long.parseLong(userInTeam), activeNew);
+            logger.debug(LITERAL_END_GET + TEAM );
+            return ResponseEntity.ok(teams);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // le pasamos
     }
 
     /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found
