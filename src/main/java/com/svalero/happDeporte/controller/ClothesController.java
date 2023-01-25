@@ -1,8 +1,6 @@
 package com.svalero.happDeporte.controller;
 
 import com.svalero.happDeporte.domain.Clothes;
-import com.svalero.happDeporte.domain.Match;
-import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.exception.*;
 import com.svalero.happDeporte.service.ClothesService;
 import org.slf4j.Logger;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +58,6 @@ public class ClothesController {
 
         return new ResponseEntity<>(newClothes, HttpStatus.CREATED);
     }
-
 
     /**
      * ResponseEntity<Void>: Vacio, solo tiene código de estado
@@ -121,7 +116,7 @@ public class ClothesController {
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/clothes/id"): URL donde se devolverán los datos por el código Id
      * @PathVariable: Para indicar que el parámetro que le pasamos en el String es que debe ir en la URL
-     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
+     * throws ClothesNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
      */
     @GetMapping("/clothes/{id}")
     public ResponseEntity<Clothes> getClothesId(@PathVariable long id) throws ClothesNotFoundException {
@@ -140,7 +135,6 @@ public class ClothesController {
     @ExceptionHandler(ClothesNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleClothesNotFoundException(ClothesNotFoundException cnfe) {
         logger.error(cnfe.getMessage(), cnfe); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //cnfe.printStackTrace(); //Traza por consola del error
         cnfe.printStackTrace(); //Para la trazabilidad de la exception
         ErrorMessage errorMessage = new ErrorMessage(404, cnfe.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND); // le pasamos el error y el 404 de not found
@@ -179,7 +173,7 @@ public class ClothesController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleException(Exception exception) {
         logger.error(exception.getMessage(), exception); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //exception.printStackTrace(); //Para la trazabilidad de la exception
+        exception.printStackTrace(); //Para la trazabilidad de la exception
         ErrorMessage errorMessage = new ErrorMessage(500, "Internal Server Error"); //asi no damos pistas de como está programa como si pasaba usando e.getMessage()
         return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR); // le pasamos el error y el 500 error en el servidor no controlado, no sé que ha pasado jajaja
     }

@@ -39,7 +39,7 @@ public class PlayerController {
 
     /**
      * ResponseEntity<Player>: Devolvemos el objeto y un 201
-     * @PostMapping("/users"): Método para dar de alta en la BBDD players
+     * @PostMapping("/users/{userId}/players"): Método para dar de alta en la BBDD players
      * @RequestBody: Los datos van en el cuerpo de la llamada como codificados
      * @Valid Para decir que valide los campos a la hora de añadir un nuevo objeto,  los campos los definidos en el domain de que forma no pueden ser introducidos o dejados en blanco por ejemplo en la BBDD
      */
@@ -68,7 +68,7 @@ public class PlayerController {
     }
 
     /**
-     * @PutMapping("/players/{id}"): Método para modificar
+     * @PutMapping("/players/{idPlayer}/users/{idUser}"): Método para modificar
      * @PathVariable: Para indicar que el parámetro que le pasamos
      * @RequestBody Player player para pasarle los datos del objeto a modificar
      */
@@ -81,25 +81,25 @@ public class PlayerController {
         return ResponseEntity.status(HttpStatus.OK).body(modifiedPlayer);
     }
 
-    /**
-     * ResponseEntity: Para devolver una respuesta con los datos y el código de estado de forma explícita
-     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
-     * @GetMapping("/players"): URL donde se devolverán los datos
-     */
-//    @GetMapping("/players")
-//    public ResponseEntity<List<Player>> getPlayers() {
-//        logger.debug(LITERAL_BEGIN_GET + PLAYER);
-//        List<Player> players = playerService.findAll();
-//        logger.debug(LITERAL_END_GET + PLAYER);
-//
-//        return ResponseEntity.ok(players);
-//    }
+//    /**
+//     * ResponseEntity: Para devolver una respuesta con los datos y el código de estado de forma explícita
+//     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
+//     * @GetMapping("/players"): URL donde se devolverán los datos
+//     */
+////    @GetMapping("/players")
+////    public ResponseEntity<List<Player>> getPlayers() {
+////        logger.debug(LITERAL_BEGIN_GET + PLAYER);
+////        List<Player> players = playerService.findAll();
+////        logger.debug(LITERAL_END_GET + PLAYER);
+////
+////        return ResponseEntity.ok(players);
+////    }
 
     /**
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/players/id"): URL donde se devolverán los datos por el código Id
      * @PathVariable: Para indicar que el parámetro que le pasamos en el String es que debe ir en la URL
-     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
+     * throws PlayerNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
      */
     @GetMapping("/players/{id}")
     public ResponseEntity<Player> getPlayerId(@PathVariable long id) throws PlayerNotFoundException {
@@ -146,7 +146,7 @@ public class PlayerController {
     @GetMapping("/player")
     public ResponseEntity<List<Player>> getPlayerSexOrder(@RequestParam (name = "active", defaultValue = "", required = false) String active,
                                                           @RequestParam(name = "userInPlayer", defaultValue = "", required = false) String userInPlayer) throws PlayerNotFoundException {
-        logger.debug((LITERAL_BEGIN_GET + PLAYER)); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug((LITERAL_BEGIN_GET + PLAYER));
         boolean activeNew = Boolean.parseBoolean(active);
 
         if (userInPlayer.equals("")) {
@@ -158,21 +158,8 @@ public class PlayerController {
             logger.debug(LITERAL_END_GET + PLAYER );
             return ResponseEntity.ok(players);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // le pasamos
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
-//    public ResponseEntity<List<Player>> getPlayerSexOrder(@RequestParam (name = "active", defaultValue = "", required = false) String active) {
-//        logger.debug((LITERAL_BEGIN_GET + PLAYER)); //Indicamos que el método ha sido llamado y lo registramos en el log
-//        boolean activeNew = Boolean.parseBoolean(active);
-//
-//        if (active.equals("")) {
-//            logger.debug(LITERAL_END_GET + PLAYER );
-//            return ResponseEntity.ok(playerService.findAll());
-//        }
-//        List<Player> players = playerService.findSexOrder(activeNew);
-//        logger.debug(LITERAL_END_GET + PLAYER );
-//        return ResponseEntity.ok(players);
-//    }
 
         /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found
          * @ExceptionHandler(PlayerNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso PlayerNotFoundException.class
@@ -182,7 +169,6 @@ public class PlayerController {
         @ExceptionHandler(PlayerNotFoundException.class)
         public ResponseEntity<ErrorMessage> handlePlayerNotFoundException (PlayerNotFoundException pnfe){
             logger.error(pnfe.getMessage(), pnfe); //Mandamos la traza de la exception al log, con su mensaje y su traza
-            //unfe.printStackTrace(); //Traza por consola del error
             pnfe.printStackTrace(); //Para la trazabilidad de la exception
             ErrorMessage errorMessage = new ErrorMessage(404, pnfe.getMessage());
             return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND); // le pasamos el error y el 404 de not found
@@ -221,7 +207,7 @@ public class PlayerController {
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ErrorMessage> handleException (Exception exception){
             logger.error(exception.getMessage(), exception); //Mandamos la traza de la exception al log, con su mensaje y su traza
-            //exception.printStackTrace(); //Para la trazabilidad de la exception
+            exception.printStackTrace(); //Para la trazabilidad de la exception
             ErrorMessage errorMessage = new ErrorMessage(500, "Internal Server Error"); //asi no damos pistas de como está programa como si pasaba usando e.getMessage()
             return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR); // le pasamos el error y el 500 error en el servidor no controlado, no sé que ha pasado jajaja
         }

@@ -61,7 +61,6 @@ public class TeamServiceImpl implements TeamService {
                 .orElseThrow(UserNotFoundException::new);
 
 //        modelMapper.map(newTeam, existingTeam);
-
         existingTeam.setUserInTeam(existingUser);
         existingTeam.setCategory(newTeam.getCategory());
         existingTeam.setCompetition("Mierda");

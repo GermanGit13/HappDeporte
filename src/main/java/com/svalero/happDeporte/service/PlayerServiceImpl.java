@@ -34,7 +34,6 @@ public class PlayerServiceImpl implements PlayerService {
     public Player addPlayer(Player player, long userId) throws UserNotFoundException {
         Player newPlayer = player; //Creamos un objeto Player
         User user = userRepository.findById(userId) //Para buscar el usuario si existe
-                //User user = UserRepository.findById(userId) //Para buscar el usuario que existe en la relacion cuando nos viene por objeto y no por URL
                 .orElseThrow(UserNotFoundException::new);
         newPlayer.setUserInPlayer(user); //El bus nuevo esta relacionado con la linea x
 

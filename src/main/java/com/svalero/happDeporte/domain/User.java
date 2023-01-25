@@ -69,13 +69,6 @@ public class User {
     @Size(min = 9)
     private String phone;
 
-//    /**
-//     * Para relacionar los paradas con las líneas de paradas: Una parada puede tener x lineas y una linea puede tener x paradas
-//     * @ManyToMany(mappedBy = "stops"): Para decirle donde lo hemos definido, en que parte se encuentra mapeada, en este caso en la clase Java BusLine --> "private List<BusStop> stops"
-//     */
-//    @ManyToMany(mappedBy = "users")
-//    private List<Team> teams;
-
     /**
      * Para relacionar los usuarios con los jugadores: Un usuario puede tener x jugadores a creados a su cargo
      * @OneToMany(mappedBy = "user"): Indicamos que ya está mapeado en la Clase Player que es donde se genera la columna con id de los usuarios

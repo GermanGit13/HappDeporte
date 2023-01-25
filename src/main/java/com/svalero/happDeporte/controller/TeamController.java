@@ -42,7 +42,7 @@ public class TeamController {
 
     /**
      * ResponseEntity<Team>: Devolvemos el objeto y un 201
-     * @PostMapping("/teams"): Método para dar de alta en la BBDD players
+     * @PostMapping("/users/{userId}/teams"): Método para dar de alta en la BBDD players
      * @RequestBody: Los datos van en el cuerpo de la llamada como codificados
      * @Valid Para decir que valide los campos a la hora de añadir un nuevo objeto,  los campos los definidos en el domain de que forma no pueden ser introducidos o dejados en blanco por ejemplo en la BBDD
      */
@@ -52,7 +52,6 @@ public class TeamController {
         logger.debug(LITERAL_BEGIN_ADD + TEAM); //Indicamos que el método ha sido llamado y lo registramos en el log
         Team newTeam = teamService.addTeam(team, userId);
         logger.debug(LITERAL_END_ADD + PLAYER); //Indicamos que el método ha sido llamado y lo registramos en el log
-        //return ResponseEntity.status(200).body(newPlayer); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newTeam, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
 
@@ -116,7 +115,7 @@ public class TeamController {
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/teams/id"): URL donde se devolverán los datos por el código Id
      * @PathVariable: Para indicar que el parámetro que le pasamos en el String es que debe ir en la URL
-     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
+     * throws TeamNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
      */
     @GetMapping("/teams/{id}")
     public ResponseEntity<Team> findById(@PathVariable long id) throws TeamNotFoundException {
@@ -135,7 +134,7 @@ public class TeamController {
     @GetMapping("/team")
     public ResponseEntity<List<Team>> getTeamByUser(@RequestParam (name = "userInTeam", defaultValue = "", required = false) String userInTeam,
                                                     @RequestParam(name = "active", defaultValue = "", required = false) String active) throws TeamNotFoundException {
-        logger.debug((LITERAL_BEGIN_GET + TEAM)); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug((LITERAL_BEGIN_GET + TEAM));
         boolean activeNew = Boolean.parseBoolean(active);
 
         if (!userInTeam.equals("") && !active.equals("")) {

@@ -41,17 +41,17 @@ public class MatchController {
     private final Logger logger = LoggerFactory.getLogger(MatchController.class);
 
     /**
-     * ResponseEntity<Player>: Devolvemos el objeto y un 201
-     * @PostMapping("/players"): Método para dar de alta en la BBDD players
+     * ResponseEntity<Match>: Devolvemos el objeto y un 201
+     * @PostMapping("/matches"): Método para dar de alta en la BBDD players
      * @RequestBody: Los datos van en el cuerpo de la llamada como codificados
      * @Valid Para decir que valide los campos a la hora de añadir un nuevo objeto,  los campos los definidos en el domain de que forma no pueden ser introducidos o dejados en blanco por ejemplo en la BBDD
      */
     @PostMapping("/teams/{teamId}/matches")
     @Validated
     public ResponseEntity<Match> addMatch(@Valid @PathVariable long teamId, @RequestBody Match match) throws TeamNotFoundException {
-        logger.debug(LITERAL_BEGIN_ADD + TEAM); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_BEGIN_ADD + TEAM);
         Match newMatch = matchService.addMatch(match, teamId);
-        logger.debug(LITERAL_END_ADD + PLAYER); //Indicamos que el método ha sido llamado y lo registramos en el log
+        logger.debug(LITERAL_END_ADD + PLAYER);
         //return ResponseEntity.status(200).body(newPlayer); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newMatch, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
@@ -71,9 +71,9 @@ public class MatchController {
     }
 
     /**
-     * @PutMapping("/matches/{id}"): Método para modificar
+     * @PutMapping("/matches/{idMatches}/teams/{idTeams}"): Método para modificar
      * @PathVariable: Para indicar que el parámetro que le pasamos
-     * @RequestBody Player player para pasarle los datos del objeto a modificar
+     * @RequestBody Match match para pasarle los datos del objeto a modificar
      */
     @PutMapping("/matches/{idMatches}/teams/{idTeams}")
     public ResponseEntity<Match> modifyMatch(@PathVariable long idMatches, @PathVariable long idTeams, @RequestBody Match match) throws MatchNotFoundException, TeamNotFoundException {
@@ -95,9 +95,6 @@ public class MatchController {
                                              @RequestParam (name = "hourMatch", defaultValue = "", required = false) String  hourMatch) throws MatchNotFoundException {
         logger.debug(LITERAL_BEGIN_GET + MATCH);
 
-//        LocalDate dateMatchNew = LocalDate.parse(dateMatch);
-//        LocalTime hourDateNew = LocalTime.parse(hourMatch);
-
         if (teamInMatch.equals("") && dateMatch.equals("") && hourMatch.equals("")) {
             logger.debug(LITERAL_END_GET + MATCH);
             return ResponseEntity.ok(matchService.findAll());
@@ -115,9 +112,9 @@ public class MatchController {
 
     /**
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
-     * @GetMapping("/players/id"): URL donde se devolverán los datos por el código Id
+     * @GetMapping("/matches/id"): URL donde se devolverán los datos por el código Id
      * @PathVariable: Para indicar que el parámetro que le pasamos en el String es que debe ir en la URL
-     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
+     * throws MatchNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
      */
     @GetMapping("/matches/{id}")
     public ResponseEntity<Match> findById(@PathVariable long id) throws MatchNotFoundException {
@@ -136,7 +133,6 @@ public class MatchController {
     @ExceptionHandler(MatchNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleMatchNotFoundException(MatchNotFoundException mnfe) {
         logger.error(mnfe.getMessage(), mnfe); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //mnfe.printStackTrace(); //Traza por consola del error
         mnfe.printStackTrace(); //Para la trazabilidad de la exception
         ErrorMessage errorMessage = new ErrorMessage(404, mnfe.getMessage());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND); // le pasamos el error y el 404 de not found
@@ -175,7 +171,7 @@ public class MatchController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleException(Exception exception) {
         logger.error(exception.getMessage(), exception); //Mandamos la traza de la exception al log, con su mensaje y su traza
-        //exception.printStackTrace(); //Para la trazabilidad de la exception
+        exception.printStackTrace(); //Para la trazabilidad de la exception
         ErrorMessage errorMessage = new ErrorMessage(500, "Internal Server Error"); //asi no damos pistas de como está programa como si pasaba usando e.getMessage()
         return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR); // le pasamos el error y el 500 error en el servidor no controlado, no sé que ha pasado jajaja
     }

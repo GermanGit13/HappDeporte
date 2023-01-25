@@ -23,7 +23,6 @@ public interface ClothesRepository extends CrudRepository<Clothes, Long> {
      * Query Methods: Métodos de las sentencias SQL con el nombre ya resuelve la consulta
      */
     List<Clothes> findAll();
-
     List<Clothes> findByPlayerInClothes(Optional<Player> player); //Para poder recibir el objeto Player
     List<Clothes> findByPlayerInClothesAndSizeEquipment(Optional<Player> player, String sizeEquipment); //Para poder recibir el objeto User y talla
     List<Clothes> findByPlayerInClothesAndSizeEquipmentAndDorsal(Optional<Player> player, String sizeEquipment, int dorsal); //Para poder recibir el objeto Player, buscar por talla y active

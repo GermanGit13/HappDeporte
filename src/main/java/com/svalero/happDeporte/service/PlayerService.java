@@ -32,14 +32,8 @@ public interface PlayerService {
 //    /**
 //     *NativeQuery
 //     */
-
-
-
 //    List<Player> searchPlayer(@Param("search") String search) throws PlayerNotFoundException;
-
-
 //    List<Player> searchPlayer(String search) throws PlayerNotFoundException;
-
 //    List<Player> findByUser(User user); // Lista para buscar los Players por user
 //    List<Player> findByUser(User user, boolean active); //Lista para buscar jugadores por usuario y activos
 }

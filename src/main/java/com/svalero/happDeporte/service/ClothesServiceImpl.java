@@ -54,29 +54,6 @@ public class ClothesServiceImpl implements ClothesService{
         return clothesRepository.save(clothes);
     }
 
-//    @Override
-//    public Clothes addClothes(Clothes clothes) throws UserNotFoundException, PlayerNotFoundException {
-////        User user = userRepository.findById(clothes.getUserInClothes())
-////                .orElseThrow(UserNotFoundException::new);
-//
-//
-//        Player player = playerRepository.findById(clothes.getPlayerInClothes())
-//                        .orElseThrow(PlayerNotFoundException::new);
-////
-////        clothes.setUserInClothes(user);
-//        clothes.setPlayerInClothes(player);
-//        clothes.setPriceEquipment(PRICE_EQUIPMENT);
-//        clothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
-//        return clothesRepository.save(clothes);
-//    }
-
-//    @Override
-//    public Clothes addClothes(Clothes clothes) {
-//        clothes.setPriceEquipment(PRICE_EQUIPMENT);
-//        clothes.setPriceSweatshirt(PRICE_SWEATSHIRT);
-//        return clothesRepository.save(clothes);
-//    }
-
     @Override
     public void deleteClothes(long id) throws ClothesNotFoundException {
         Clothes clothes = clothesRepository.findById(id)

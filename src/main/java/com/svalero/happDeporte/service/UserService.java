@@ -20,6 +20,5 @@ public interface UserService {
     List<User> findByName(String Name);
     List<User> findByNameAndRol(String name, String rol);
     List<User> findByRol(String rol);
-
     List<User> findByNameAndRolAndAndCoach(String Username, String rol, boolean coach);
 }

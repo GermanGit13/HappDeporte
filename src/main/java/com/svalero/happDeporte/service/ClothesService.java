@@ -1,10 +1,8 @@
 package com.svalero.happDeporte.service;
 
 import com.svalero.happDeporte.domain.Clothes;
-import com.svalero.happDeporte.domain.Player;
 import com.svalero.happDeporte.exception.ClothesNotFoundException;
 import com.svalero.happDeporte.exception.PlayerNotFoundException;
-import com.svalero.happDeporte.exception.UserNotFoundException;
 
 import java.util.List;
 

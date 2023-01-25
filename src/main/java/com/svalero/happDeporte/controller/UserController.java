@@ -51,7 +51,6 @@ public class UserController {
         logger.debug(LITERAL_BEGIN_ADD + USER); //Indicamos que el método ha sido llamado y lo registramos en el log
         User newUser = userService.addUser(user);
         logger.debug(LITERAL_END_ADD + USER); //Indicamos que el método ha sido llamado y lo registramos en el log
-        //return ResponseEntity.status(200).body(newUser); Opcion a mano le pasamos el código y los datos del Objeto creado
         return new ResponseEntity<>(newUser, HttpStatus.CREATED); //Tambien podemos usar la opción rápida
     }
 
@@ -139,42 +138,6 @@ public class UserController {
         logger.debug("Fin User Username Variable");//Indicamos que el método ha finalizado y lo registramos en el log
         return ResponseEntity.ok(user);
     }
-
-    /**
-     * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
-     * @GetMapping("/users/id"): URL donde se devolverán los datos por el código Id
-     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
-     * throws UserNotFoundException: capturamos la exception y se la mandamos al manejador de excepciones creado más abajo @ExceptionHandler
-     */
-//    @GetMapping("/user")
-//    public ResponseEntity<User> getUsername(@RequestParam(name = "username", value = "") String username) {
-//        logger.debug("Begin Username"); //Indicamos que el método ha sido llamado y lo registramos en el log
-//        User user = userService.findByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
-//        logger.debug("Fin Username");//Indicamos que el método ha finalizado y lo registramos en el log
-//        return ResponseEntity.ok(user);
-//    }
-
-//    @GetMapping("/user")
-//    public ResponseEntity<List<User>> getRol(@RequestParam(name = "rol", value = "") String rol) {
-//        logger.debug("Begin Rol"); //Indicamos que el método ha sido llamado y lo registramos en el log
-//        List<User> user = userService.findByRol(rol); //Recogemos el objeto llamado por el método y creamos el objeto
-//        logger.debug("Fin Rol");//Indicamos que el método ha finalizado y lo registramos en el log
-//        return ResponseEntity.ok(user);
-//    }
-
-//    /**
-//     * Buscar por dos campos
-//     * @GetMapping("/users/id"): URL donde se devolverán los datos por el código Id
-//     * @RequestParam: Son las QueryParam se usa para poder hacer filtrados en las busquedas "Where"
-//     */
-//    @GetMapping("/user")
-//    public ResponseEntity<List<User>> getRolAndCoach(@RequestParam (name = "rol", defaultValue = "", required = false) String rol,
-//                                                     @RequestParam (name = "coach", defaultValue = "", required = false) boolean coach) {
-//        logger.debug(("Begin Rol and Coach")); //Indicamos que el método ha sido llamado y lo registramos en el log
-//        List<User> user = userService.findByRolAndAndCoach(rol, coach);
-//        logger.debug("End Rol and Coach" );
-//        return ResponseEntity.ok(user);
-//    }
 
     /**
      * @ExceptionHandler(UserNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso UserNotFoundException.class
