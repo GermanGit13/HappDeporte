@@ -1,0 +1,29 @@
+openapi: 3.0.1
+#Dentro de la web Swagger buscar basic structure -> guía a seguir para crear la semilla
+#El tabulado es el que marca el inicio y el fin del cada parte del código
+#Muy importante tabular bien.
+#https://editor.swagger.io/
+#https://swagger.io/docs/specification/2-0/basic-structure/
+servers:
+  - url: https://localhost:8080 #URL basic de la Api, la que todas las URL van a tener
+info:
+  description: API para la Gestión de Club Deportivos
+  version: "1.0"
+  title: HappDeporte API
+#tags -> Para catalogar los endpoint de la API
+tags:
+  - name: User
+    description: Operaciones sobre los Usuarios
+  - name: Player
+    description: Operaciones sobre los Jugadores
+  - name: Team
+    description: Operacions sobre los Equipos
+  - name: Match
+    description: Operaciones sobre os Partidos
+  - name: Clothes
+    description: Operaciones sobre los pedidos de Ropa
+paths:
+  #operaciones sobre /users
+  /users:
+
+
