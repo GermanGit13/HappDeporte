@@ -4,13 +4,29 @@ openapi: 3.0.1
 #Muy importante tabular bien.
 #https://editor.swagger.io/
 #https://swagger.io/docs/specification/2-0/basic-structure/
+
+info:
+  description: |- 
+    API para la gestión de club deportivos
+    
+    Some useful links:
+    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
+    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+
+  title: HappDeporte API
+  contact:
+    name: Germán Rodríguez Serrano
+    email: a26318@svalero.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "1.0"
+
+# tags -> Para catalogar los endpoint de la API
 servers:
   - url: https://localhost:8080 #URL basic de la Api, la que todas las URL van a tener
-info:
-  description: API para la Gestión de Club Deportivos
-  version: "1.0"
-  title: HappDeporte API
-#tags -> Para catalogar los endpoint de la API
+    description: HappDeporte
+
 tags:
   - name: User
     description: Operaciones sobre los Usuarios
@@ -22,8 +38,196 @@ tags:
     description: Operaciones sobre os Partidos
   - name: Clothes
     description: Operaciones sobre los pedidos de Ropa
-paths:
-  #operaciones sobre /users
+
+paths: # Rutas operaciones que tenemos por cada path Ej: /users
+  # operaciones sobre /users
   /users:
+    post:
+      tags:
+        - User
+#      sumary: Alta de Usuarios
+      description: Registro de un nuevo usuario para poder usar  la aplicación
+      operationId: postUser # Id de operación tiene que ser único Ej: getUserByPlayer getALl getById
+      requestBody: # Para indicarle que lleva un cuerpo de entrada para dar de alta
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserIn'
+
+
+      responses:
+        '201':
+          description: Usuario creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOut'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+
+
+  #Podemos crear components para reutilizarlps como contenido dentro de las respuestas
+  #Panel izquierdo -> Structure -> Components -> Components
+components:
+  schemas:
+    UserOut:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Nombre de usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 3 y máxima 9
+          example: ger13
+        pass:
+          type: string
+          description: Contraseña de usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 6 y máxima 16
+          example: Acces0@Dat0S
+        rol:
+          type: string
+          description: Permisos de acceso a la API, por defecto user. Solo puede ser módificado por un usuario con rol admin
+          example: user
+        coach:
+          type: boolean
+          description:  Por defecto false, indica si un usuario es también entrenador de un equipo. Solo puede ser módificado por un usuario con rol admin
+          example: false
+        name:
+          type: string
+          description: Nombre del usuario que se registra
+          example: German
+        surname:
+          type: string
+          description: Apellidos del usuario que se registra
+          example: Rodriguez Serrano
+        address:
+          type: string
+          description: Direccion del usuario que se registra
+          example: Calle Tacona, 23
+        phone:
+          type: string
+          description: Número de teléfono del usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 9
+          example: 666 66 66 66
+    UserIn:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Nombre de usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 3 y máxima 9
+          example: ger13
+        pass:
+          type: string
+          description: Contraseña de usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 6 y máxima 16
+          example: Acces0@Dat0S
+#        rol:
+#          type: string
+#          description: Permisos de acceso a la API
+#          example: coach
+#        coach:
+#          type: boolean
+#          description: Para indicar si es o no entrenador de un equipo
+#          example: true
+        name:
+          type: string
+          description: Nombre del usuario que se registra
+          example: German
+        surname:
+          type: string
+          description: Apellidos del usuario que se registra
+          example: Rodriguez Serrano
+        address:
+          type: string
+          description: Direccion del usuario que se registra
+          example: Calle Tacona, 23
+        phone:
+          type: string
+          description: Número de teléfono del usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 9
+          example: 666 66 66 66
+    BadRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          description: código de estado
+          example: 400
+        message:
+          type: string
+          description: Mensaje de error
+          example: Error de validación
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorField'
+    ErrorField:
+      type: object
+      description: Error de validación en un campo de entrada
+      properties:
+        fieldName:
+          type: string
+          description: El campo donde se ha producido el error
+          example: username
+        message:
+          type: string
+          description: Mensaje de error asociado con el campo
+          example: El usuario no se puede dejar en blanco
+    NotFound:
+      type: object
+      description: Objeto no encontrado
+      properties:
+        code:
+          type: string
+          description: código de estado
+          example: 404
+        message:
+          type: string
+          description: Mensaje de error
+          example: User not found
+    InternalServerError:
+      type: object
+      description: Error Interno de la API
+      properties:
+        code:
+          type: string
+          description: Código de estado
+          example: 500
+        message:
+          type: string
+          description: Mensaje de error
+          example: Internal Server Error
+
+    #Podemos crear respuestas para reutilizarlas y no tener que estar escribiendo lo mismo constantemente
+    #Panel izquierdo -> Structure -> Components -> Responses
+  responses:
+    NoContent:
+      description: No Content
+    BadRequest:
+      description: Error de validación
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequest'
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFound'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
+
+#  parameters:
+#    BusId:
+#      name: busId
+#      in: path
+#      description: Bus ID
+#      required: true
+#      schema:
+#        type: integer
+
+
 
 

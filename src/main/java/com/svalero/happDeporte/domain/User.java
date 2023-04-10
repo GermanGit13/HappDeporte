@@ -41,13 +41,13 @@ public class User {
     private String pass;
 
     @Column//(columnDefinition = ROL_DEFAULT) //Falla en H2
-    @NotBlank(message = LITERAL_NOT_BLANK)
-    @NotNull(message = LITERAL_NOT_NULL)
+//    @NotBlank(message = LITERAL_NOT_BLANK)
+//    @NotNull(message = LITERAL_NOT_NULL)
     private String rol;
 
     //TODO revisar como ponerlo por defecto en false -> el admin lo cambiará a true
     @Column//(columnDefinition = BOOLEAN_DEFAULT) //Falla en H2
-    @NotNull(message = LITERAL_NOT_NULL)
+//    @NotNull(message = LITERAL_NOT_NULL)
     private boolean coach;
 
     @Column
