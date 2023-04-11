@@ -6,7 +6,7 @@ openapi: 3.0.1
 #https://swagger.io/docs/specification/2-0/basic-structure/
 
 info:
-  description: |- 
+  description: |-
     API para la gestión de club deportivos
     
     Some useful links:
@@ -45,7 +45,7 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
     post:
       tags:
         - User
-#      sumary: Alta de Usuarios
+      # sumary: Alta de Usuarios
       description: Registro de un nuevo usuario para poder usar  la aplicación
       operationId: postUser # Id de operación tiene que ser único Ej: getUserByPlayer getALl getById
       requestBody: # Para indicarle que lleva un cuerpo de entrada para dar de alta
@@ -53,7 +53,51 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
           application/json:
             schema:
               $ref: '#/components/schemas/UserIn'
+      responses:
+        '201':
+          description: Usuario creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
+  '/users/{userId}':
+    parameters:
+      #Marcamos la referencia a /components/parameters/UserId donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  /users/{userId} aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/UserId'
+
+    delete:
+      tags:
+        - User
+      summary: Dar de baja un usuario
+      description: Operación de borrado de usuarios por id
+      operationId: deleteUserId
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      tags:
+        - User
+      summary: Modificación de usuario
+      description: Modificiación de un usuario por id
+      operationId: modifyUserId
+      requestBody:
+        description: Los datos nuevos de un usario, aqui si podemos asignar los campos coach y rol
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPut'
 
       responses:
         '201':
@@ -61,88 +105,80 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserOut'
+                $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
 
-
   #Podemos crear components para reutilizarlps como contenido dentro de las respuestas
   #Panel izquierdo -> Structure -> Components -> Components
 components:
   schemas:
-    UserOut:
-      type: object
-      properties:
-        username:
-          type: string
-          description: Nombre de usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 3 y máxima 9
-          example: ger13
-        pass:
-          type: string
-          description: Contraseña de usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 6 y máxima 16
-          example: Acces0@Dat0S
-        rol:
-          type: string
-          description: Permisos de acceso a la API, por defecto user. Solo puede ser módificado por un usuario con rol admin
-          example: user
-        coach:
-          type: boolean
-          description:  Por defecto false, indica si un usuario es también entrenador de un equipo. Solo puede ser módificado por un usuario con rol admin
-          example: false
-        name:
-          type: string
-          description: Nombre del usuario que se registra
-          example: German
-        surname:
-          type: string
-          description: Apellidos del usuario que se registra
-          example: Rodriguez Serrano
-        address:
-          type: string
-          description: Direccion del usuario que se registra
-          example: Calle Tacona, 23
-        phone:
-          type: string
-          description: Número de teléfono del usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 9
-          example: 666 66 66 66
     UserIn:
       type: object
       properties:
         username:
           type: string
+          format: string
           description: Nombre de usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 3 y máxima 9
           example: ger13
         pass:
           type: string
+          format: string
           description: Contraseña de usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 6 y máxima 16
           example: Acces0@Dat0S
-#        rol:
-#          type: string
-#          description: Permisos de acceso a la API
-#          example: coach
-#        coach:
-#          type: boolean
-#          description: Para indicar si es o no entrenador de un equipo
-#          example: true
         name:
           type: string
+          format: string
           description: Nombre del usuario que se registra
           example: German
         surname:
           type: string
+          format: string
           description: Apellidos del usuario que se registra
           example: Rodriguez Serrano
         address:
           type: string
+          format: string
           description: Direccion del usuario que se registra
           example: Calle Tacona, 23
         phone:
           type: string
+          format: string
           description: Número de teléfono del usuario, se realiza validaciones para que no sea null, campo en blanco, longuitud mínima de carácteres 9
           example: 666 66 66 66
+
+    User:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: number
+              format: long
+              description: Id autonúmerico como clave primaria de la BBDD
+              example: 13
+        - $ref: '#/components/schemas/UserIn'
+        - $ref: '#/components/schemas/UserPut'
+
+
+    UserPut:
+      allOf:
+        - type: object
+          properties:
+            rol:
+              type: string
+              format: string
+              description: Permisos de acceso a la API
+              example: coach
+            coach:
+              type: boolean
+              format: boolean
+              description: Para indicar si es o no entrenador de un equipo
+              example: true
+        - $ref: '#/components/schemas/UserIn'
+
     BadRequest:
       type: object
       properties:
@@ -158,6 +194,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ErrorField'
+
     ErrorField:
       type: object
       description: Error de validación en un campo de entrada
@@ -170,6 +207,7 @@ components:
           type: string
           description: Mensaje de error asociado con el campo
           example: El usuario no se puede dejar en blanco
+
     NotFound:
       type: object
       description: Objeto no encontrado
@@ -182,6 +220,7 @@ components:
           type: string
           description: Mensaje de error
           example: User not found
+
     InternalServerError:
       type: object
       description: Error Interno de la API
@@ -200,18 +239,21 @@ components:
   responses:
     NoContent:
       description: No Content
+
     BadRequest:
       description: Error de validación
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequest'
+
     NotFound:
       description: Recurso no encontrado
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/NotFound'
+
     InternalServerError:
       description: Internal Server Error
       content:
@@ -219,14 +261,16 @@ components:
           schema:
             $ref: '#/components/schemas/InternalServerError'
 
-#  parameters:
-#    BusId:
-#      name: busId
-#      in: path
-#      description: Bus ID
-#      required: true
-#      schema:
-#        type: integer
+  parameters:
+    UserId:
+      name: userId
+      in: path
+      description: Identificador del Usuario
+      required: true
+      schema:
+        type: number
+        format: long
+        example: 13
 
 
 
