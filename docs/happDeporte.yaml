@@ -70,7 +70,7 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         - User
         # - Lines #Ejemplo no es bueno que este duplicado pero podría ir en ambos path
       summary: Listado de Usuarios
-      description: Obtiene la información de todos los usuarios del sistema. Perdite filtros como name, rol y coach
+      description: Obtiene la información de todos los usuarios del sistema. Permite filtros como name, rol y coach
       operationId: getUser
       parameters:
         - $ref: '#/components/parameters/Name'
@@ -182,6 +182,34 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /players':
+    get:
+      tags:
+        - Player
+        # - Lines #Ejemplo no es bueno que este duplicado pero podría ir en ambos path
+      summary: Listado de Jugadores
+      description: Obtiene la información de todos los jugadores del sistema. Permite filtros como name, rol y coach
+      operationId: getPlayer
+      parameters:
+        - $ref: '#/components/parameters/UserInPlayer'
+        - $ref: '#/components/parameters/Name'
+        - $ref: '#/components/parameters/Active'
+      responses:
+        '200':
+          description: Se devuelve el listado de jugadores correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  #Usamos la ruta schemas para que cargue el schema. Se consulta en Structure->Compoments
+                  #nos ahorramos código, es como llamar a un método
+                  $ref: '#/components/schemas/Player'
+        '500':
+          #Usamos la ruta responses para que cargue la definión común para este tipo de respuesta
+          #nos ahorramos código, es como llamar a un método
+          $ref: '#/components/responses/InternalServerError'
+
   '/users/{userId}/players':
     parameters:
       #Marcamos la referencia a /components/parameters/UserId donde hemos definido los datos y así podemos reutilizarlos
@@ -277,6 +305,8 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+
+
 
 
 
@@ -547,7 +577,7 @@ components:
     Name:
       name: name
       in: query #@RequestParam: no forma parte de la URL, se carga por "?" como opción, es un "WHERE".
-      description: Filtrar por el nombre introducido por los usuarios
+      description: Filtrar por el nombre introducido
       required: false
       schema:
         type: string
@@ -582,6 +612,25 @@ components:
         type: number
         format: long
         example: 13
+    UserInPlayer:
+      name: userInPlayer
+      in: query
+      description: Identificador de un jugador, cuando se filtra solo por este parámetro se devuelve listado ordenado por sexo
+      required: false
+      schema:
+        type: number
+        format: long
+        example: 2
+    Active:
+      name: active
+      in: query
+      description: Filtrar por los jugadores en activo del club, cuando se filtra solo por este parámetro se devuelve listado ordenado por sexo
+      required: false
+      schema:
+        type: boolean
+        format: boolean
+        enum: [ true, false ]
+        example: true
 
 
 
