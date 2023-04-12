@@ -120,13 +120,12 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
       description: Modificiación de un usuario por id
       operationId: modifyUserId
       requestBody:
-        description: Los datos nuevos de un usario, aqui si podemos asignar los campos coach y rol
+        description: Los datos nuevos de un usuario, aqui si podemos asignar los campos coach y rol
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/UserPut'
-
       responses:
         '201':
           description: Usuario creado correctamente
@@ -136,6 +135,8 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
                 $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -147,7 +148,7 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
       operationId: getUserId
       responses:
         '200':
-          description: Se devuelve la información del bus
+          description: Se devuelve la información de un usuario
           content:
             application/json:
               schema:
@@ -171,7 +172,7 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
       operationId: getUsername
       responses:
         '200':
-          description: Se devuelve la información del bus
+          description: Se devuelve la información del usuario
           content:
             application/json:
               schema:
@@ -190,7 +191,7 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
     post:
       tags:
         - Player
-      # sumary: Alta de Jugadores
+#      sumary: Alta de Jugadores
       description: Registro de un nuevo jugador asociado a un user existente (Padre, Madre o Tutor)
       operationId: postPlayer # Id de operación tiene que ser único
       requestBody: # Para indicarle que lleva un cuerpo de entrada para dar de alta
@@ -211,6 +212,72 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+
+  '/players/{playerId}':
+    parameters:
+      #Marcamos la referencia a /components/parameters/PlayerId donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  /players/{playerId} aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/PlayerId'
+
+    delete:
+      tags:
+        - Player
+      summary: Dar de baja un jugador
+      description: Operación de borrado de Judagor por id, no se borra en cascada. El usuario asociado permanece
+      operationId: deletePlayerId
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      tags:
+        - Player
+      summary: Modificación de jugadores
+      description: Modificiación de un jugador por id
+      operationId: modifyPlayerId
+      requestBody:
+        description: Los datos nuevos de un jugador
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerPut'
+      responses:
+        '201':
+          description: Jugador modificado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        '400':
+          $ref: '#/components/responses/BadRequestPlayer'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    get:
+      tags:
+        - Player
+      summary: Consulta de jugador por Id
+      description: Consulta de jugador por su identificador único
+      operationId: getPlayerId
+      responses:
+        '200':
+          description: Se devuelve la información del jugador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 
 
   #Podemos crear components para reutilizarlps como contenido dentro de las respuestas
@@ -336,6 +403,10 @@ components:
               $ref: '#/components/schemas/User'
 #          - $ref: '#/components/schemas/UserPut'
 
+    PlayerPut:
+      allOf:
+        - $ref: '#/components/schemas/PlayerIn'
+
     BadRequest:
       type: object
       properties:
@@ -350,7 +421,7 @@ components:
         errors:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorField'
+            $ref: '#/components/schemas/ErrorFieldPlayer'
 
     ErrorField:
       type: object
@@ -363,7 +434,36 @@ components:
         message:
           type: string
           description: Mensaje de error asociado con el campo
-          example: El usuario no se puede dejar en blanco
+          example: No puede estar el campo en blanco
+
+    BadRequestPlayer:
+      type: object
+      properties:
+        code:
+          type: string
+          description: código de estado
+          example: 400
+        message:
+          type: string
+          description: Mensaje de error
+          example: Error de validación
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorFieldPlayer'
+
+    ErrorFieldPlayer:
+      type: object
+      description: Error de validación en un campo de entrada
+      properties:
+        fieldName:
+          type: string
+          description: El campo donde se ha producido el error
+          example: dni
+        message:
+          type: string
+          description: Mensaje de error asociado con el campo
+          example: No puede estar el campo en blanco
 
     NotFound:
       type: object
@@ -376,7 +476,7 @@ components:
         message:
           type: string
           description: Mensaje de error
-          example: User not found
+          example: Not found
 
     InternalServerError:
       type: object
@@ -398,6 +498,13 @@ components:
       description: No Content
 
     BadRequest:
+      description: Error de validación
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequest'
+
+    BadRequestPlayer:
       description: Error de validación
       content:
         application/json:
@@ -466,6 +573,15 @@ components:
         format: boolean
         enum: [true, false]
         example: true
+    PlayerId:
+      name: playerId
+      in: path
+      description: Identificador de un jugador
+      required: true
+      schema:
+        type: number
+        format: long
+        example: 13
 
 
 
