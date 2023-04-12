@@ -181,6 +181,38 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  '/users/{userId}/players':
+    parameters:
+      #Marcamos la referencia a /components/parameters/UserId donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  /users/{userId} aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/UserId'
+
+    post:
+      tags:
+        - Player
+      # sumary: Alta de Jugadores
+      description: Registro de un nuevo jugador asociado a un user existente (Padre, Madre o Tutor)
+      operationId: postPlayer # Id de operación tiene que ser único
+      requestBody: # Para indicarle que lleva un cuerpo de entrada para dar de alta
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerIn'
+      responses:
+        '201':
+          description: Jugador creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+
   #Podemos crear components para reutilizarlps como contenido dentro de las respuestas
   #Panel izquierdo -> Structure -> Components -> Components
 components:
@@ -231,7 +263,6 @@ components:
         - $ref: '#/components/schemas/UserIn'
         - $ref: '#/components/schemas/UserPut'
 
-
     UserPut:
       allOf:
         - type: object
@@ -247,6 +278,63 @@ components:
               description: Para indicar si es o no entrenador de un equipo
               example: true
         - $ref: '#/components/schemas/UserIn'
+
+    PlayerIn:
+      type: object
+      properties:
+        name:
+          type: string
+          format: string
+          description: Nombre del jugador, se realiza validaciones para que no sea null, campo en blanco
+          example: Adriana
+        surname:
+          type: string
+          format: string
+          description: Apellidos del jugador, se realiza validaciones para que no sea null, campo en blanco
+          example: Rodríguez Domínguez
+        dni:
+          type: string
+          format: string
+          description: Dni del jugador, se realiza validaciones para que no sea null, campo en blanco
+          example: 50979686W
+        birthDate:
+          type: Date
+          format: LocalDate
+          description: Fecha de Nacimiento del Jugador
+          example: 2010-01-05
+        allergy:
+          type: string
+          format: string
+          description: Alergias o Intolerancias que tiene el jugador
+          example: lactosa y fructosa
+        dorsal:
+          type: number
+          format: int
+          description: Dorsal de la equipación del jugador
+          example: 8
+        sex:
+          type: string
+          format: char
+          description: Masculino o Femenino
+          example: F
+        active:
+          type: boolean
+          format: boolean
+          description: Jugador en activo o no
+
+    Player:
+      allOf:
+        - $ref: '#/components/schemas/PlayerIn'
+        - type: object
+          properties:
+            id:
+              type: number
+              format: long
+              description: Id autonúmerico como clave primaria de la BBDD
+              example: 24
+            user:
+              $ref: '#/components/schemas/User'
+#          - $ref: '#/components/schemas/UserPut'
 
     BadRequest:
       type: object
@@ -366,7 +454,8 @@ components:
       schema:
         type: string
         format: string
-        example: admin
+        enum: [admin, coach, user]
+        example: coach
     Coach:
       name: coach
       in: query #@RequestParam: no forma parte de la URL, se carga por "?" como opción, es un "WHERE".
@@ -375,7 +464,9 @@ components:
       schema:
         type: boolean
         format: boolean
+        enum: [true, false]
         example: true
+
 
 
 
