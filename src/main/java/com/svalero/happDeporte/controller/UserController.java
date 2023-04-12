@@ -91,7 +91,7 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<Object> getUsers(@RequestParam (name = "name", defaultValue = "", required = false) String name,
                                              @RequestParam (name = "rol", defaultValue = "", required = false) String rol,
-                                             @RequestParam (name = "coach", defaultValue = "", required = false) String  coach) throws PlayerNotFoundException {
+                                             @RequestParam (name = "coach", defaultValue = "", required = false) String  coach) {
 
         logger.debug(LITERAL_BEGIN_GET + USER);
         boolean coachNew = Boolean.parseBoolean(coach);

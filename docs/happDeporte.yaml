@@ -65,6 +65,34 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+    get:
+      tags:
+        - User
+        # - Lines #Ejemplo no es bueno que este duplicado pero podría ir en ambos path
+      summary: Listado de Usuarios
+      description: Obtiene la información de todos los usuarios del sistema. Perdite filtros como name, rol y coach
+      operationId: getUser
+      parameters:
+        - $ref: '#/components/parameters/Name'
+        - $ref: '#/components/parameters/Rol'
+        - $ref: '#/components/parameters/Coach'
+      responses:
+        '200':
+          description: Se devuelve el listado de usuarios correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  #Usamos la ruta schemas para que cargue el schema. Se consulta en Structure->Compoments
+                  #nos ahorramos código, es como llamar a un método
+                  $ref: '#/components/schemas/User'
+        '500':
+          #Usamos la ruta responses para que cargue la definión común para este tipo de respuesta
+          #nos ahorramos código, es como llamar a un método
+          $ref: '#/components/responses/InternalServerError'
+
+
   '/users/{userId}':
     parameters:
       #Marcamos la referencia a /components/parameters/UserId donde hemos definido los datos y así podemos reutilizarlos
@@ -111,6 +139,47 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+    get:
+      tags:
+        - User
+      summary: Consulta de usuario por Id
+      description: Consulta de usuario por su identificador único
+      operationId: getUserId
+      responses:
+        '200':
+          description: Se devuelve la información del bus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  '/users/username/{username}':
+    parameters:
+      #Marcamos la referencia a /components/parameters/UserId donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  /users/{userId} aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/Username'
+
+    get:
+      tags:
+        - User
+      summary: Busqueda por Username
+      description: Operación de buscar un usuario por username que es único
+      operationId: getUsername
+      responses:
+        '200':
+          description: Se devuelve la información del bus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   #Podemos crear components para reutilizarlps como contenido dentro de las respuestas
   #Panel izquierdo -> Structure -> Components -> Components
@@ -271,6 +340,44 @@ components:
         type: number
         format: long
         example: 13
+    Username:
+      name: username
+      in: path
+      description: Nombre de Usuario
+      required: true
+      schema:
+        type: string
+        format: string
+        example: Ger13
+    Name:
+      name: name
+      in: query #@RequestParam: no forma parte de la URL, se carga por "?" como opción, es un "WHERE".
+      description: Filtrar por el nombre introducido por los usuarios
+      required: false
+      schema:
+        type: string
+        format: string
+        example: german
+    Rol:
+      name: rol
+      in: query #@RequestParam: no forma parte de la URL, se carga por "?" como opción, es un "WHERE".
+      description: Filtrar por los permisos que tienen los usuarios asociados
+      required: false
+      schema:
+        type: string
+        format: string
+        example: admin
+    Coach:
+      name: coach
+      in: query #@RequestParam: no forma parte de la URL, se carga por "?" como opción, es un "WHERE".
+      description: Filtrar por los usarios que son o no entrenadores
+      required: false
+      schema:
+        type: boolean
+        format: boolean
+        example: true
+
+
 
 
 
