@@ -306,8 +306,36 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  '/users/{userId}/teams':
+    parameters:
+      #Marcamos la referencia a /components/parameters/UserId donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  users/{userId}/teams aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/UserId'
 
-
+    post:
+      tags:
+        - Team
+      #      sumary: Alta de Equipos
+      description: Registro de un nuevo equipo asociado a un user (El user es el Entrenador asociado)
+      operationId: postTeam # Id de operación tiene que ser único
+      requestBody: # Para indicarle que lleva un cuerpo de entrada para dar de alta
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamIn'
+      responses:
+        '201':
+          description: Equipo creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 
   #Podemos crear components para reutilizarlps como contenido dentro de las respuestas
@@ -436,6 +464,58 @@ components:
     PlayerPut:
       allOf:
         - $ref: '#/components/schemas/PlayerIn'
+
+    TeamIn:
+      type: object
+      properties:
+        category:
+          type: string
+          format: string
+          description: Categoria en la que juega el equipo, se realiza validaciones para que no sea null, campo en blanco
+          example: Benjamin
+        competition:
+          type: string
+          format: string
+          description: Competición en la que juega, se realiza validaciones para que no sea null, campo en blanco
+          example: Moratalaz
+        cuota:
+          type: number
+          format: double
+          description: Cuota que cuesta jugar en el equipo
+          example: 300
+        dayTrain:
+          type: string
+          format: string
+          description: Dia que realiza entrenamientos
+          example: Martes y Jueves
+        startTrain:
+          type: LocalTime
+          format: LocalTime
+          description: Hora de comienzo del entrenamiento
+          example: 19:15
+        endTrain:
+          type: LocalTime
+          format: LocalTime
+          description: Hora de finalización del entrenamiento
+          example: 20:15
+        active:
+          type: boolean
+          format: boolean
+          description: Equipo en activo
+
+    Team:
+      allOf:
+        - $ref: '#/components/schemas/TeamIn'
+        - type: object
+          properties:
+            id:
+              type: number
+              format: long
+              description: Id autonúmerico como clave primaria de la BBDD
+              example: 2
+            user:
+              $ref: '#/components/schemas/User'
+    #          - $ref: '#/components/schemas/UserPut'
 
     BadRequest:
       type: object
@@ -631,6 +711,14 @@ components:
         format: boolean
         enum: [ true, false ]
         example: true
+#  examples:
+#    userUnoExample:
+#      value:
+#        - $ref: '#/components/schemas/User'
+#
+#    userDosExample:
+#      value:
+#        - $ref: '#/components/schemas/UserDos'
 
 
 
