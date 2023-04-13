@@ -331,11 +331,68 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
               schema:
                 $ref: '#/components/schemas/Team'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequestTeam'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+
+  '/teams/{id}':
+    parameters:
+      #Marcamos la referencia a /components/parameters/TeamId donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  teams/{teamId}/teams aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/TeamId'
+
+    delete:
+      tags:
+        - Team
+      summary: Dar de baja un Equipo
+      description: Operación de borrado de Equipo por id, no se borra en cascada. El usuario asociado permanece
+      operationId: deleteTeamId
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  '/teams/{idTeam}/users/{idUser}':
+    parameters:
+      #Marcamos la referencia a /components/parameters/TeamId donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  teams/{teamId}/teams aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/TeamId'
+      - $ref: '#/components/parameters/UserId'
+
+    put:
+      tags:
+        - Team
+      summary: Modificación de equipos
+      description: Modificación de un equipo por id
+      operationId: modifyTeamId
+      requestBody:
+        description: Los datos nuevos de un equipo
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamPut'
+      responses:
+        '201':
+          description: Equipo modificado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          $ref: '#/components/responses/BadRequestTeam'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+
+
 
 
   #Podemos crear components para reutilizarlps como contenido dentro de las respuestas
@@ -517,6 +574,17 @@ components:
               $ref: '#/components/schemas/User'
     #          - $ref: '#/components/schemas/UserPut'
 
+    TeamPut:
+      allOf:
+        - $ref: '#/components/schemas/TeamIn'
+#        - type: object
+#          properties:
+#            userInTeam:
+#              type: number
+#              format: long
+#              description: Id autonúmerico como clave primaria de la BBDD
+#              example: 13
+
     BadRequest:
       type: object
       properties:
@@ -531,7 +599,7 @@ components:
         errors:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorFieldPlayer'
+            $ref: '#/components/schemas/ErrorField'
 
     ErrorField:
       type: object
@@ -544,7 +612,7 @@ components:
         message:
           type: string
           description: Mensaje de error asociado con el campo
-          example: No puede estar el campo en blanco
+          example: El campo no puede estar el campo en blanco
 
     BadRequestPlayer:
       type: object
@@ -573,7 +641,36 @@ components:
         message:
           type: string
           description: Mensaje de error asociado con el campo
-          example: No puede estar el campo en blanco
+          example: El campo no puede estar el campo en blanco
+
+    BadRequestTeam:
+      type: object
+      properties:
+        code:
+          type: string
+          description: código de estado
+          example: 400
+        message:
+          type: string
+          description: Mensaje de error
+          example: Error de validación
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorFieldTeam'
+
+    ErrorFieldTeam:
+      type: object
+      description: Error de validación en un campo de entrada
+      properties:
+        fieldName:
+          type: string
+          description: El campo donde se ha producido el error
+          example: category
+        message:
+          type: string
+          description: Mensaje de error asociado con el campo
+          example: El campo no puede estar el campo en blanco
 
     NotFound:
       type: object
@@ -619,7 +716,14 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/BadRequest'
+            $ref: '#/components/schemas/BadRequestPlayer'
+
+    BadRequestTeam:
+      description: Error de validación
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestTeam'
 
     NotFound:
       description: Recurso no encontrado
@@ -711,6 +815,15 @@ components:
         format: boolean
         enum: [ true, false ]
         example: true
+    TeamId:
+      name: teamId
+      in: path
+      description: Identificador de un equipo
+      required: true
+      schema:
+        type: number
+        format: long
+        example: 1
 #  examples:
 #    userUnoExample:
 #      value:
