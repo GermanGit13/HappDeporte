@@ -310,7 +310,8 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
     parameters:
       #Marcamos la referencia a /components/parameters/UserId donde hemos definido los datos y así podemos reutilizarlos
       #Para los que usen el Path  users/{userId}/teams aplica el $ref así ahorramos código repetido
-      - $ref: '#/components/parameters/UserId'
+      - $ref: '#/components/parameters/UserInTeam'
+      - $ref: '#/components/parameters/ActiveTeam'
 
     post:
       tags:
@@ -337,6 +338,32 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+    get:
+      tags:
+        - Team
+        # - Lines #Ejemplo no es bueno que este duplicado pero podría ir en ambos path
+      summary: Listado de Equipos
+      description: Obtiene listado de entrenadores por equipo activo o de baja, ordenados por categoría
+      operationId: getTeamUserIdActive
+      parameters:
+        - $ref: '#/components/parameters/UserInTeam'
+        - $ref: '#/components/parameters/ActiveTeam'
+      responses:
+        '200':
+          description: Se devuelve el listado de equipos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  #Usamos la ruta schemas para que cargue el schema. Se consulta en Structure->Compoments
+                  #nos ahorramos código, es como llamar a un método
+                  $ref: '#/components/schemas/Team'
+        '500':
+          #Usamos la ruta responses para que cargue la definión común para este tipo de respuesta
+          #nos ahorramos código, es como llamar a un método
+          $ref: '#/components/responses/InternalServerError'
+
   '/teams/{id}':
     parameters:
       #Marcamos la referencia a /components/parameters/TeamId donde hemos definido los datos y así podemos reutilizarlos
@@ -357,12 +384,58 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+    get:
+      tags:
+        - Team
+      summary: Consulta de equipo por Id
+      description: Consulta de equipo por su identificador único
+      operationId: getTeamId
+      responses:
+        '200':
+          description: Se devuelve la información de un equipo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   '/teams/{idTeam}/users/{idUser}':
     parameters:
       #Marcamos la referencia a /components/parameters/TeamId donde hemos definido los datos y así podemos reutilizarlos
       #Para los que usen el Path  teams/{teamId}/teams aplica el $ref así ahorramos código repetido
       - $ref: '#/components/parameters/TeamId'
       - $ref: '#/components/parameters/UserId'
+
+  '/teams':
+    get:
+      tags:
+        - Team
+        # - Lines #Ejemplo no es bueno que este duplicado pero podría ir en ambos path
+      summary: Listado de Equipos
+      description: Obtiene la información de todos los equipos del sistema. Permite filtros como category, competition y active
+      operationId: getTeam
+      parameters:
+        - $ref: '#/components/parameters/Category'
+        - $ref: '#/components/parameters/Competition'
+        - $ref: '#/components/parameters/ActiveTeam'
+      responses:
+        '200':
+          description: Se devuelve el listado de equipos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  #Usamos la ruta schemas para que cargue el schema. Se consulta en Structure->Compoments
+                  #nos ahorramos código, es como llamar a un método
+                  $ref: '#/components/schemas/Team'
+        '500':
+          #Usamos la ruta responses para que cargue la definión común para este tipo de respuesta
+          #nos ahorramos código, es como llamar a un método
+          $ref: '#/components/responses/InternalServerError'
 
     put:
       tags:
@@ -804,11 +877,21 @@ components:
       schema:
         type: number
         format: long
-        example: 2
+        example: 13
     Active:
       name: active
       in: query
       description: Filtrar por los jugadores en activo del club, cuando se filtra solo por este parámetro se devuelve listado ordenado por sexo
+      required: false
+      schema:
+        type: boolean
+        format: boolean
+        enum: [ true, false ]
+        example: true
+    ActiveTeam:
+      name: active
+      in: query
+      description: Filtrar por los equipo en activo del club
       required: false
       schema:
         type: boolean
@@ -823,7 +906,35 @@ components:
       schema:
         type: number
         format: long
-        example: 1
+        example: 2
+    Category:
+      name: category
+      in: query
+      description: Filtrar por la categoria a la que pertenece un equipo
+      required: false
+      schema:
+        type: string
+        format: string
+        example: Benjamín
+    Competition:
+      name: competition
+      in: query
+      description: Filtrar por la competición a la que pertenece un equipo
+      required: false
+      schema:
+        type: string
+        format: string
+        example: Moratalaz
+    UserInTeam:
+      name: userInTeam
+      in: path
+      description: Identificador de un usuario que es entrenador
+      required: true
+      schema:
+        type: number
+        format: long
+        example: 13
+
 #  examples:
 #    userUnoExample:
 #      value:
