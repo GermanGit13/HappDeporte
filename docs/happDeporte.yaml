@@ -464,6 +464,37 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  '/teams/{teamId}/matches':
+    parameters:
+      #Marcamos la referencia a /components/parameters/teamInMatch donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  teams/{teamId}/matches aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/TeamInMatch'
+
+    post:
+      tags:
+        - Match
+      #      sumary: Alta de Partidos
+      description: Registro de un nuevo partido asociado a un equipo
+      operationId: postMatch # Id de operación tiene que ser único
+      requestBody: # Para indicarle que lleva un cuerpo de entrada para dar de alta
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchIn'
+      responses:
+        '201':
+          description: Partido creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Match'
+        '400':
+          $ref: '#/components/responses/BadRequestMatch'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 
 
 
@@ -645,7 +676,7 @@ components:
               example: 2
             user:
               $ref: '#/components/schemas/User'
-    #          - $ref: '#/components/schemas/UserPut'
+#              $ref: '#/components/schemas/UserPut'
 
     TeamPut:
       allOf:
@@ -657,6 +688,59 @@ components:
 #              format: long
 #              description: Id autonúmerico como clave primaria de la BBDD
 #              example: 13
+
+    MatchIn:
+      type: object
+      properties:
+        teamB:
+          type: string
+          format: string
+          description: Nombre del equipo contrario
+          example: Loreto CB
+        markerA:
+          type: number
+          format: int
+          description: Marcador del equipo del club
+          example: 55
+        markerB:
+          type: number
+          format: int
+          description: Marcador del equipo contrario (teamB)
+          example: 44
+        analysis:
+          type: string
+          format: string
+          description: Analisis del partido
+          example: Gran Victoria del Equipo Femenino
+        location:
+          type: string
+          format: string
+          description: Lugar del partido
+          example: Pabellon Moratalaz
+        dateMatch:
+          type: LocalDate
+          format: LocalDate
+          description: Día del partido
+          example: 2023-01-05
+        hourMatch:
+          type: LocalTime
+          format: LocalTime
+          description: Hora del partido
+          example: 22:00:00
+
+    Match:
+      allOf:
+        - $ref: '#/components/schemas/MatchIn'
+        - type: object
+          properties:
+            id:
+              type: number
+              format: long
+              description: Id autonúmerico como clave primaria de la BBDD
+              example: 1
+            team:
+              $ref: '#/components/schemas/Team'
+  #          - $ref: '#/components/schemas/UserPut'
 
     BadRequest:
       type: object
@@ -745,6 +829,35 @@ components:
           description: Mensaje de error asociado con el campo
           example: El campo no puede estar el campo en blanco
 
+    BadRequestMatch:
+      type: object
+      properties:
+        code:
+          type: string
+          description: código de estado
+          example: 400
+        message:
+          type: string
+          description: Mensaje de error
+          example: Error de validación
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorFieldMatch'
+
+    ErrorFieldMatch:
+      type: object
+      description: Error de validación en un campo de entrada
+      properties:
+        fieldName:
+          type: LocalDate
+          description: El campo donde se ha producido el error
+          example: dateMatch
+        message:
+          type: string
+          description: Mensaje de error asociado con el campo
+          example: El campo no puede estar el campo en blanco
+
     NotFound:
       type: object
       description: Objeto no encontrado
@@ -797,6 +910,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequestTeam'
+
+    BadRequestMatch:
+      description: Error de validación
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestMatch'
 
     NotFound:
       description: Recurso no encontrado
@@ -934,6 +1054,15 @@ components:
         type: number
         format: long
         example: 13
+    TeamInMatch:
+      name: teamInMatch
+      in: path
+      description: Identificador de un equipo que juega un partido
+      required: true
+      schema:
+        type: number
+        format: long
+        example: 2
 
 #  examples:
 #    userUnoExample:
