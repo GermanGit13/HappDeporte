@@ -495,6 +495,108 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  '/matches/{id}':
+    parameters:
+      #Marcamos la referencia a /components/parameters/TeamId donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  matches/{matId}/teams aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/MatchId'
+
+    delete:
+      tags:
+        - Match
+      summary: Dar de baja un Partido
+      description: Operación de borrado de partido por id, no se borra en cascada. El equipo asociado permanece
+      operationId: deleteTeamId
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    get:
+      tags:
+        - Match
+      summary: Consulta de partido por Id
+      description: Consulta de partido por su identificador único
+      operationId: getMatchId
+      responses:
+        '200':
+          description: Se devuelve la información de un partido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Match'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  '/matches/{idMatches}/teams/{idTeams}':
+    parameters:
+      #Marcamos la referencia a /components/parameters/teamInMatch donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  teams/{teamId}/matches aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/MatchId'
+      - $ref: '#/components/parameters/TeamInMatch'
+
+    put:
+      tags:
+        - Match
+      summary: Modificación de partidos
+      description: Modificación de un partido por id
+      operationId: modifyMatchId
+      requestBody:
+        description: Los datos nuevos de un partido
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchPut'
+      responses:
+        '201':
+          description: Partido modificado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Match'
+        '400':
+          $ref: '#/components/responses/BadRequestMatch'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  '/matches':
+    get:
+      tags:
+        - Match
+        # - Lines #Ejemplo no es bueno que este duplicado pero podría ir en ambos path
+      summary: Listado de Partidos
+      description: Obtiene la información de todos los partidos del sistema. Permite filtros como equipo local, fecha y hora
+      operationId: getMatch
+      parameters:
+        - $ref: '#/components/parameters/TeamInMatchQuery'
+        - $ref: '#/components/parameters/DateMatch'
+        - $ref: '#/components/parameters/HourMatch'
+      responses:
+        '200':
+          description: Se devuelve el listado de los partidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  #Usamos la ruta schemas para que cargue el schema. Se consulta en Structure->Compoments
+                  #nos ahorramos código, es como llamar a un método
+                  $ref: '#/components/schemas/Match'
+        '500':
+          #Usamos la ruta responses para que cargue la definión común para este tipo de respuesta
+          #nos ahorramos código, es como llamar a un método
+          $ref: '#/components/responses/InternalServerError'
+
+
+
 
 
 
@@ -737,10 +839,14 @@ components:
               type: number
               format: long
               description: Id autonúmerico como clave primaria de la BBDD
-              example: 1
+              example: 2
             team:
               $ref: '#/components/schemas/Team'
   #          - $ref: '#/components/schemas/UserPut'
+
+    MatchPut:
+      allOf:
+        - $ref: '#/components/schemas/MatchIn'
 
     BadRequest:
       type: object
@@ -1063,6 +1169,43 @@ components:
         type: number
         format: long
         example: 2
+    MatchId:
+      name: matchId
+      in: path
+      description: Identificador de un partido
+      required: true
+      schema:
+        type: number
+        format: long
+        example: 2
+    TeamInMatchQuery:
+      name: teamInMatch
+      in: query
+      description: Identificador de un equipo que juega un partido
+      required: false
+      schema:
+        type: number
+        format: long
+        example: 2
+    DateMatch:
+      name: dateMatch
+      in: query
+      description: Fecha de un partido
+      required: false
+      schema:
+        type: dateLocal
+        format: dateLocal
+        example: 2023-01-05
+    HourMatch:
+      name: hourMatch
+      in: query
+      description: Hora de un partido
+      required: false
+      schema:
+        type: timeLocal
+        format: timeLocal
+        example: 22:00:00
+
 
 #  examples:
 #    userUnoExample:
