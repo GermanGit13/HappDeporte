@@ -595,8 +595,36 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
           #nos ahorramos código, es como llamar a un método
           $ref: '#/components/responses/InternalServerError'
 
+  '/players/{playerId}/clothes"':
+    parameters:
+      #Marcamos la referencia a /components/parameters/teamInMatch donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  teams/{teamId}/matches aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/PlayerId'
 
-
+    post:
+      tags:
+        - Clothes
+      #      sumary: Alta de Partidos
+      description: Registro de un nuevo pedido de ropa asociado a un jugador
+      operationId: postClothes # Id de operación tiene que ser único
+      requestBody: # Para indicarle que lleva un cuerpo de entrada para dar de alta
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClothesIn'
+      responses:
+        '201':
+          description: Pedido creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clothes'
+        '400':
+          $ref: '#/components/responses/BadRequestClothes'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 
 
@@ -848,6 +876,68 @@ components:
       allOf:
         - $ref: '#/components/schemas/MatchIn'
 
+    ClothesIn:
+      type: object
+      properties:
+        equipment:
+          type: boolean
+          format: boolean
+          description: Quiere el uniforme de juego "si o no"
+          example: true
+        sweatshirt:
+          type: boolean
+          format: boolean
+          description: Quiere la sudadera del club "si o no"
+          example: true
+        sizeEquipment:
+          type: string
+          format: string
+          description: Talla para el uniforme
+          example: XL
+        sizeSweatshirt:
+          type: string
+          format: string
+          description: Talla para la sudadera
+          example: XL
+        serygrafhy:
+          type: string
+          format: string
+          description: Serigrafía a poner en la equipación
+          example: Rodríguez
+        dorsal:
+          type: number
+          format: int
+          description: Número que usa el jugador
+          example: 13
+        priceEquipment:
+          type: number
+          format: double
+          description: Precio de equipación
+          example: 55.50
+        priceSweatshirt:
+          type: number
+          format: double
+          description: Precio de la sudadera
+          example: 25
+
+    Clothes:
+      allOf:
+        - $ref: '#/components/schemas/MatchIn'
+        - type: object
+          properties:
+            id:
+              type: number
+              format: long
+              description: Id autonúmerico como clave primaria de la BBDD
+              example: 1
+            player:
+              $ref: '#/components/schemas/Player'
+    #          - $ref: '#/components/schemas/UserPut'
+
+    ClothesPut:
+      allOf:
+        - $ref: '#/components/schemas/MatchIn'
+
     BadRequest:
       type: object
       properties:
@@ -964,6 +1054,35 @@ components:
           description: Mensaje de error asociado con el campo
           example: El campo no puede estar el campo en blanco
 
+    BadRequestClothes:
+      type: object
+      properties:
+        code:
+          type: string
+          description: código de estado
+          example: 400
+        message:
+          type: string
+          description: Mensaje de error
+          example: Error de validación
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorFieldClothes'
+
+    ErrorFieldClothes:
+      type: object
+      description: Error de validación en un campo de entrada
+      properties:
+        fieldName:
+          type: int
+          description: El campo donde se ha producido el error
+          example: 13
+        message:
+          type: string
+          description: Mensaje de error asociado con el campo
+          example: Solo se permiten números entre 1 y 99
+
     NotFound:
       type: object
       description: Objeto no encontrado
@@ -1023,6 +1142,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/BadRequestMatch'
+
+    BadRequestClothes:
+      description: Error de validación
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestClothes'
 
     NotFound:
       description: Recurso no encontrado
