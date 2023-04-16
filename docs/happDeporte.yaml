@@ -626,6 +626,56 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  '/clothes/{id}':
+    parameters:
+      #Marcamos la referencia a /components/parameters/TeamId donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  matches/{matId}/teams aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/ClothesId'
+
+    delete:
+      tags:
+        - Clothes
+      summary: Dar de baja un Pedido
+      description: Operación de borrado de pedido por id, no se borra en cascada. El jugador asociado permanece
+      operationId: deleteClothesId
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      tags:
+        - Clothes
+      summary: Modificación de pedidos
+      description: Modificación de un pedido por id
+      operationId: modifyClothesId
+      requestBody:
+        description: Los datos nuevos de un pedido
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClothesPut'
+      responses:
+        '201':
+          description: Pedido modificado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clothes'
+        '400':
+          $ref: '#/components/responses/BadRequestClothes'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+
+
+
 
 
 
@@ -747,7 +797,7 @@ components:
               type: number
               format: long
               description: Id autonúmerico como clave primaria de la BBDD
-              example: 24
+              example: 13
             user:
               $ref: '#/components/schemas/User'
 #          - $ref: '#/components/schemas/UserPut'
@@ -922,7 +972,7 @@ components:
 
     Clothes:
       allOf:
-        - $ref: '#/components/schemas/MatchIn'
+        - $ref: '#/components/schemas/ClothesIn'
         - type: object
           properties:
             id:
@@ -937,6 +987,13 @@ components:
     ClothesPut:
       allOf:
         - $ref: '#/components/schemas/MatchIn'
+        - type: object
+          properties:
+            playerInClothes:
+              type: number
+              format: long
+              description: Id autonúmerico como clave primaria de la BBDD
+              example: 13
 
     BadRequest:
       type: object
@@ -1331,6 +1388,15 @@ components:
         type: timeLocal
         format: timeLocal
         example: 22:00:00
+    ClothesId:
+      name: clothesId
+      in: path
+      description: Identificador de un pedido
+      required: true
+      schema:
+        type: number
+        format: long
+        example: 1
 
 
 #  examples:
