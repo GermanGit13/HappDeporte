@@ -49,15 +49,15 @@ public class ClothesController {
 
         return new ResponseEntity<>(newClothes, HttpStatus.CREATED);
     }
-    @PostMapping("/clothes")
-    @Validated
-    public ResponseEntity<Clothes> addClothes(@Valid @RequestBody Clothes clothes) throws PlayerNotFoundException {
-        logger.debug(LITERAL_BEGIN_ADD + CLOTHES);
-        Clothes newClothes = clothesService.addClothes(clothes);
-        logger.debug(LITERAL_END_ADD + CLOTHES);
-
-        return new ResponseEntity<>(newClothes, HttpStatus.CREATED);
-    }
+//    @PostMapping("/clothes")
+//    @Validated
+//    public ResponseEntity<Clothes> addClothes(@Valid @RequestBody Clothes clothes) throws PlayerNotFoundException {
+//        logger.debug(LITERAL_BEGIN_ADD + CLOTHES);
+//        Clothes newClothes = clothesService.addClothes(clothes);
+//        logger.debug(LITERAL_END_ADD + CLOTHES);
+//
+//        return new ResponseEntity<>(newClothes, HttpStatus.CREATED);
+//    }
 
     /**
      * ResponseEntity<Void>: Vacio, solo tiene código de estado

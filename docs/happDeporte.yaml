@@ -409,6 +409,33 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
       - $ref: '#/components/parameters/TeamId'
       - $ref: '#/components/parameters/UserId'
 
+    put:
+      tags:
+        - Team
+      summary: Modificación de equipos
+      description: Modificación de un equipo por id
+      operationId: modifyTeamId
+      requestBody:
+        description: Los datos nuevos de un equipo
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamPut'
+      responses:
+        '201':
+          description: Equipo modificado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '400':
+          $ref: '#/components/responses/BadRequestTeam'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   '/teams':
     get:
       tags:
@@ -435,33 +462,6 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           #Usamos la ruta responses para que cargue la definión común para este tipo de respuesta
           #nos ahorramos código, es como llamar a un método
-          $ref: '#/components/responses/InternalServerError'
-
-    put:
-      tags:
-        - Team
-      summary: Modificación de equipos
-      description: Modificación de un equipo por id
-      operationId: modifyTeamId
-      requestBody:
-        description: Los datos nuevos de un equipo
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TeamPut'
-      responses:
-        '201':
-          description: Equipo modificado correctamente
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Team'
-        '400':
-          $ref: '#/components/responses/BadRequestTeam'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
           $ref: '#/components/responses/InternalServerError'
 
   '/teams/{teamId}/matches':
@@ -646,11 +646,36 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+    get:
+      tags:
+        - Clothes
+      summary: Lista por Id
+      description: Listado de un pedido por su número de id
+      operationId: getClothesId
+      responses:
+        '200':
+          description: Se devuelve la información de un pedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clothes'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  '/clothes/{idClothes}/players/{idPlayers}':
+    parameters:
+      #Marcamos la referencia a /components/parameters/teamInMatch donde hemos definido los datos y así podemos reutilizarlos
+      #Para los que usen el Path  teams/{teamId}/matches aplica el $ref así ahorramos código repetido
+      - $ref: '#/components/parameters/ClothesId'
+      - $ref: '#/components/parameters/PlayerId'
+
     put:
       tags:
         - Clothes
-      summary: Modificación de pedidos
-      description: Modificación de un pedido por id
+      summary: Modificación de pedido de ropa por usuario
+      description: Modificación de un ropa por id y el id del usuario asociado
       operationId: modifyClothesId
       requestBody:
         description: Los datos nuevos de un pedido
@@ -661,7 +686,7 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
               $ref: '#/components/schemas/ClothesPut'
       responses:
         '201':
-          description: Pedido modificado correctamente
+          description: Pedido Ropa modificado correctamente
           content:
             application/json:
               schema:
@@ -673,10 +698,33 @@ paths: # Rutas operaciones que tenemos por cada path Ej: /users
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-
-
-
-
+  '/clothes':
+    get:
+      tags:
+        - Clothes
+        # - Lines #Ejemplo no es bueno que este duplicado pero podría ir en ambos path
+      summary: Listado de Pedidos de Ropa
+      description: Obtiene la información de todos los pedidos del sistema. Permite filtros como jugador que tiene pedido, talla de la equipación y dorsal
+      operationId: getClothes
+      parameters:
+        - $ref: '#/components/parameters/PlayerInClothesQuery'
+        - $ref: '#/components/parameters/SizeEquipment'
+        - $ref: '#/components/parameters/Dorsal'
+      responses:
+        '200':
+          description: Se devuelve el listado de los pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  #Usamos la ruta schemas para que cargue el schema. Se consulta en Structure->Compoments
+                  #nos ahorramos código, es como llamar a un método
+                  $ref: '#/components/schemas/Clothes'
+        '500':
+          #Usamos la ruta responses para que cargue la definión común para este tipo de respuesta
+          #nos ahorramos código, es como llamar a un método
+          $ref: '#/components/responses/InternalServerError'
 
 
   #Podemos crear components para reutilizarlps como contenido dentro de las respuestas
@@ -798,7 +846,7 @@ components:
               format: long
               description: Id autonúmerico como clave primaria de la BBDD
               example: 13
-            user:
+            userInPlayer:
               $ref: '#/components/schemas/User'
 #          - $ref: '#/components/schemas/UserPut'
 
@@ -986,14 +1034,7 @@ components:
 
     ClothesPut:
       allOf:
-        - $ref: '#/components/schemas/MatchIn'
-        - type: object
-          properties:
-            playerInClothes:
-              type: number
-              format: long
-              description: Id autonúmerico como clave primaria de la BBDD
-              example: 13
+        - $ref: '#/components/schemas/ClothesIn'
 
     BadRequest:
       type: object
@@ -1397,6 +1438,33 @@ components:
         type: number
         format: long
         example: 1
+    PlayerInClothesQuery:
+      name: playerInClothes
+      in: query
+      description: Identificador de un jugador del sistema
+      required: false
+      schema:
+        type: number
+        format: long
+        example: 13
+    SizeEquipment:
+      name: sizeEquipment
+      in: query
+      description: Talla de la equipación
+      required: false
+      schema:
+        type: string
+        format: string
+        example: XL
+    Dorsal:
+      name: dorsal
+      in: query
+      description: Dorsal de un jugador del sistema
+      required: false
+      schema:
+        type: number
+        format: int
+        example: 8
 
 
 #  examples:
