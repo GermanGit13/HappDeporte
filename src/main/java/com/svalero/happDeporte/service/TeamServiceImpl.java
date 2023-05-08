@@ -103,4 +103,9 @@ public class TeamServiceImpl implements TeamService {
     public List<Team> findTeamAndActiveByUserId(long userInTeam, boolean active) {
             return teamRepository.findTeamAndActiveByUserId(userInTeam, active);
         }
+
+    @Override
+    public List<Team> findByUserInTeam(long userInTeam) {
+        return teamRepository.findByUserInTeam(userInTeam);
+    }
 }

@@ -21,4 +21,5 @@ public interface TeamService {
     List<Team> findByCategoryAndCompetition(String category, String competition);
     List<Team> findByCategoryAndCompetitionAndActive(String category, String competition, boolean active);
     List<Team> findTeamAndActiveByUserId(long userInTeam, boolean active);
+    List<Team> findByUserInTeam(long userInTeam);
 }
