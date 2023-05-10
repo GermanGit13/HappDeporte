@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -24,6 +25,8 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
     List<Team> findByCategory(String category);
     List<Team> findByCategoryAndCompetition(String category, String competition);
     List<Team> findByCategoryAndCompetitionAndActive(String category, String competition, boolean active);
+
+    List<Team> findByUserInTeam(long userInTeam);
     /**
      * nativeQuery: Buscar Entrenadores por equipos activos ordenados por categoria
      */

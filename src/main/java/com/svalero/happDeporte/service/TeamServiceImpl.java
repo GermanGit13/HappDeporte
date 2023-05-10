@@ -63,7 +63,7 @@ public class TeamServiceImpl implements TeamService {
 //        modelMapper.map(newTeam, existingTeam);
         existingTeam.setUserInTeam(existingUser);
         existingTeam.setCategory(newTeam.getCategory());
-        existingTeam.setCompetition("Mierda");
+        existingTeam.setCompetition(newTeam.getCompetition());
         existingTeam.setDayTrain(newTeam.getDayTrain());
         existingTeam.setStartTrain(newTeam.getStartTrain());
         existingTeam.setEndTrain(newTeam.getEndTrain());
@@ -103,4 +103,9 @@ public class TeamServiceImpl implements TeamService {
     public List<Team> findTeamAndActiveByUserId(long userInTeam, boolean active) {
             return teamRepository.findTeamAndActiveByUserId(userInTeam, active);
         }
+
+    @Override
+    public List<Team> findByUserInTeam(long userInTeam) {
+        return teamRepository.findByUserInTeam(userInTeam);
+    }
 }

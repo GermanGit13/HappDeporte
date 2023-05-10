@@ -91,7 +91,7 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<Object> getUsers(@RequestParam (name = "name", defaultValue = "", required = false) String name,
                                              @RequestParam (name = "rol", defaultValue = "", required = false) String rol,
-                                             @RequestParam (name = "coach", defaultValue = "", required = false) String  coach) throws PlayerNotFoundException {
+                                             @RequestParam (name = "coach", defaultValue = "", required = false) String  coach) {
 
         logger.debug(LITERAL_BEGIN_GET + USER);
         boolean coachNew = Boolean.parseBoolean(coach);
@@ -132,7 +132,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/users/username/{username}")
-    public ResponseEntity<User> getUser(@PathVariable String username) {
+    public ResponseEntity<User> getUser(@PathVariable String username) throws UserNotFoundException{
         logger.debug("Begin User Username Variable"); //Indicamos que el método ha sido llamado y lo registramos en el log
         User user = userService.findByUsername(username); //Recogemos el objeto llamado por el método y creamos el objeto
         logger.debug("Fin User Username Variable");//Indicamos que el método ha finalizado y lo registramos en el log

@@ -23,6 +23,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.svalero.happDeporte.Util.Literal.*;
 
@@ -131,19 +132,36 @@ public class TeamController {
      * ResponseEntity.ok: Devuelve un 200 ok con los datos buscados
      * @GetMapping("/teams"): URL donde se devolverán los datos
      */
-    @GetMapping("/team")
-    public ResponseEntity<List<Team>> getTeamByUser(@RequestParam (name = "userInTeam", defaultValue = "", required = false) String userInTeam,
-                                                    @RequestParam(name = "active", defaultValue = "", required = false) String active) throws TeamNotFoundException {
+    @GetMapping("/users/{userId}/teams")
+    public ResponseEntity<List<Team>> getTeamByUser(@PathVariable long userInTeam, @RequestParam(name = "active", defaultValue = "", required = false) String active) throws TeamNotFoundException {
         logger.debug((LITERAL_BEGIN_GET + TEAM));
         boolean activeNew = Boolean.parseBoolean(active);
+        String userInTeamString = String.valueOf(userInTeam);
 
-        if (!userInTeam.equals("") && !active.equals("")) {
-            List<Team> teams = teamService.findTeamAndActiveByUserId(Long.parseLong(userInTeam), activeNew);
-            logger.debug(LITERAL_END_GET + TEAM );
+        if (!active.equals("")) {
+            List<Team> teams = teamService.findTeamAndActiveByUserId(userInTeam, activeNew);
+            logger.debug(LITERAL_END_GET + TEAM);
+            return ResponseEntity.ok(teams);
+        } else {
+            List<Team> teams = teamService.findByUserInTeam(userInTeam);
+            logger.debug(LITERAL_END_GET + TEAM);
             return ResponseEntity.ok(teams);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // le pasamos
     }
+
+//    @GetMapping("/users/{userId}/teams")
+//    public ResponseEntity<List<Team>> getTeamByUser(@RequestParam (name = "userInTeam", defaultValue = "", required = false) String userInTeam,
+//                                                    @RequestParam(name = "active", defaultValue = "", required = false) String active) throws TeamNotFoundException {
+//        logger.debug((LITERAL_BEGIN_GET + TEAM));
+//        boolean activeNew = Boolean.parseBoolean(active);
+//
+//        if (!userInTeam.equals("") && !active.equals("")) {
+//            List<Team> teams = teamService.findTeamAndActiveByUserId(Long.parseLong(userInTeam), activeNew);
+//            logger.debug(LITERAL_END_GET + TEAM );
+//            return ResponseEntity.ok(teams);
+//        }
+//        return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // le pasamos
+//    }
 
     /** Capturamos la excepcion para las validaciones y así devolvemos un 404 Not Found
      * @ExceptionHandler(TeamNotFoundException.class): manejador de excepciones, recoge la que le pasamos por parametro en este caso TeamNotFoundException.class

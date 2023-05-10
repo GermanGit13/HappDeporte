@@ -53,10 +53,22 @@ public class PlayerServiceImpl implements PlayerService {
                 .orElseThrow(PlayerNotFoundException::new);
         User existingUser = userRepository.findById(idUser)
                         .orElseThrow(UserNotFoundException::new);
+//        long userId = existingPlayer.getId();
+//        User existingUser = userRepository.findById(userId)
+//                .orElseThrow(UserNotFoundException::new);
 
-        modelMapper.map(newPlayer, existingPlayer);
+//        modelMapper.map(newPlayer, existingPlayer);
         existingPlayer.setId(idPlayer);
         existingPlayer.setUserInPlayer(existingUser);
+        existingPlayer.setName(newPlayer.getName());
+        existingPlayer.setSurname(newPlayer.getSurname());
+        existingPlayer.setDni(newPlayer.getDni());
+        existingPlayer.setBirthDate(newPlayer.getBirthDate());
+        existingPlayer.setAllergy(newPlayer.getAllergy());
+        existingPlayer.setDorsal(newPlayer.getDorsal());
+        existingPlayer.setSex(newPlayer.getSex());
+        existingPlayer.setActive(newPlayer.isActive());
+
         return playerRepository.save(existingPlayer);
     }
 
